@@ -172,11 +172,10 @@ def mini_tarjetas(elements, items_2col):
             ('LEFTPADDING',  (0,0), (-1,-1), 10),
         ]))
         row.append(cell)
-    t = Table([row], colWidths=[ancho_c, ancho_c], hAlign='LEFT',
-              colPadding=0.2*cm)
+    t = Table([row], colWidths=[ancho_c, ancho_c], hAlign='LEFT')
     t.setStyle(TableStyle([
         ('LEFTPADDING',  (0,0), (-1,-1), 0),
-        ('RIGHTPADDING', (0,0), (-1,-1), 5),
+        ('RIGHTPADDING', (0,0), (0,-1),  5),
     ]))
     elements.append(t)
     elements.append(Spacer(1, 0.3*cm))
