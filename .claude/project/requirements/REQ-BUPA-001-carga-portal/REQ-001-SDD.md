@@ -61,21 +61,28 @@ Verificar que el Portal Pacientes BUPA carga correctamente, responde en menos de
 
 ### Flujo principal
 
-1. Navegar a `https://portalpaciente.bupa.cl/inicio` desde el navegador
-2. El servidor responde y Angular renderiza la pagina
-3. El cuerpo de la pagina se renderiza y es visible
-4. La URL activa contiene `portalpaciente.bupa.cl`
-5. El protocolo de la URL es `https:`
-6. El tiempo total de carga es menor a 3000ms
+| # | Paso | Categoría |
+|---|------|-----------|
+| 1 | Navegar a `https://portalpaciente.bupa.cl/inicio` desde el navegador | Frontend |
+| 2 | El servidor responde y Angular renderiza la pagina | Frontend + Backend |
+| 3 | El cuerpo de la pagina se renderiza y es visible | UI |
+| 4 | La URL activa contiene `portalpaciente.bupa.cl` | Frontend |
+| 5 | El protocolo de la URL es `https:` | Backend (seguridad) |
+| 6 | El tiempo total de carga es menor a 3000ms | UX |
 
 ### Flujos alternativos / Edge Cases
 
-| Escenario | Comportamiento esperado |
-|-----------|------------------------|
-| Servidor caido | Cypress lanza error de conexion — test falla con timeout |
-| Carga lenta (> 3s) | AssertionError de tiempo — test falla con ms reales registrados |
-| Dominio incorrecto | URL no contiene `portalpaciente.bupa.cl` — test falla |
-| HTTP sin HTTPS | Protocolo retorna `http:` — test falla por seguridad |
+| Escenario | Comportamiento esperado | Categoría |
+|-----------|------------------------|-----------|
+| Servidor caido | Cypress lanza error de conexion — test falla con timeout | Backend |
+| Carga lenta (> 3s) | AssertionError de tiempo — test falla con ms reales registrados | UX |
+| Dominio incorrecto | URL no contiene `portalpaciente.bupa.cl` — test falla | Frontend |
+| HTTP sin HTTPS | Protocolo retorna `http:` — test falla por seguridad | Backend (seguridad) |
+| Menu de navegacion no visible | Elemento de menu no renderizado — test falla | UI |
+| Scroll horizontal en mobile (375px) | Overflow horizontal detectado — test falla | UX + Frontend |
+| Violaciones criticas WCAG (axe) | cypress-axe reporta violaciones criticas — test falla | UX (accesibilidad) |
+| LCP >= 2.5s o CLS >= 0.1 (Lighthouse) | Core Web Vitals fuera de umbral — test falla | UX (Core Web Vitals) |
+| Health check `/api/health` no responde 200 | Endpoint retorna error o timeout — test falla | Backend |
 
 ---
 
@@ -83,21 +90,29 @@ Verificar que el Portal Pacientes BUPA carga correctamente, responde en menos de
 
 > Cada criterio mapea directamente a un bloque `it()` en `bupa-smoke.cy.js`
 
-**Criterio A**
+| Criterio | Enunciado | Categoría |
+|----------|-----------|-----------|
+| **A** | Body visible + URL contiene `portalpaciente.bupa.cl` | UI + Frontend |
+| **B** | Tiempo de carga < 3000ms desde navegacion hasta body visible | UX |
+| **C** | Protocolo es `https:` con certificado SSL valido | Backend (seguridad) |
+
+---
+
+**Criterio A** — Categoria: UI + Frontend
 ```
 DADO    el paciente navega a https://portalpaciente.bupa.cl/inicio
 CUANDO  la pagina termina de cargar
 ENTONCES el body es visible y la URL contiene portalpaciente.bupa.cl
 ```
 
-**Criterio B**
+**Criterio B** — Categoria: UX
 ```
 DADO    el paciente navega a https://portalpaciente.bupa.cl/inicio
 CUANDO  se mide el tiempo desde inicio de navegacion hasta que el body es visible
 ENTONCES el tiempo transcurrido es menor a 3000 milisegundos
 ```
 
-**Criterio C**
+**Criterio C** — Categoria: Backend (seguridad)
 ```
 DADO    el paciente navega a https://portalpaciente.bupa.cl/inicio
 CUANDO  se evalua el protocolo de la URL activa

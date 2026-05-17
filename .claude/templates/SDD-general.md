@@ -57,23 +57,36 @@ Produce exactamente este formato, en español, con estas secciones en este orden
 
 ## Comportamiento esperado
 
+> Categorias posibles: `Frontend` | `UX` | `UI` | `Backend`
+
 **Flujo principal:**
-1. [Paso 1]
-2. [Paso 2]
-3. [...]
+
+| # | Paso | Categoria |
+|---|------|-----------|
+| 1 | [Paso 1] | [categoria] |
+| 2 | [Paso 2] | [categoria] |
+| 3 | [...] | [categoria] |
 
 **Flujos alternativos / edge cases:**
-- [Caso alternativo o borde 1]: [comportamiento esperado]
-- [Caso alternativo o borde 2]: [comportamiento esperado]
+
+| Escenario | Comportamiento esperado | Categoria |
+|-----------|------------------------|-----------|
+| [Caso 1] | [comportamiento esperado] | [categoria] |
+| [Caso 2] | [comportamiento esperado] | [categoria] |
 
 ---
 
 ## Criterios de aceptación
 
 > Formato: **Dado** [estado inicial] **Cuando** [acción] **Entonces** [resultado verificable]
+> Categorias posibles: `Frontend` | `UX` | `UI` | `Backend` 
 
-- **Dado** [...] **Cuando** [...] **Entonces** [...]
-- **Dado** [...] **Cuando** [...] **Entonces** [...]
+- **Categoria:** [categoria]
+  **Dado** [...] **Cuando** [...] **Entonces** [...]
+
+- **Categoria:** [categoria]
+  **Dado** [...] **Cuando** [...] **Entonces** [...]
+
 - [Agrega tantos como sean necesarios para cubrir el flujo principal y los edge cases]
 
 ---

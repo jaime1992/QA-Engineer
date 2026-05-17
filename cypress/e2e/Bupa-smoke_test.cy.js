@@ -8,6 +8,7 @@
 describe('REQ-BUPA-001 | Verificacion de carga del Portal Pacientes BUPA', () => {
 
   // TC-001-FP — Portal carga correctamente
+  // Categoria: UI + Frontend
   // DADO el paciente navega a https://portalpaciente.bupa.cl/inicio
   // CUANDO la pagina termina de cargar
   // ENTONCES el body es visible y la URL contiene portalpaciente.bupa.cl
@@ -18,6 +19,7 @@ describe('REQ-BUPA-001 | Verificacion de carga del Portal Pacientes BUPA', () =>
   })
 
   // TC-002-FP — Portal carga en menos de 3 segundos
+  // Categoria: UX
   // DADO el paciente navega a https://portalpaciente.bupa.cl/inicio
   // CUANDO se mide el tiempo desde inicio de navegacion hasta que el body es visible
   // ENTONCES el tiempo transcurrido es menor a 3000 milisegundos
@@ -31,6 +33,7 @@ describe('REQ-BUPA-001 | Verificacion de carga del Portal Pacientes BUPA', () =>
   })
 
   // TC-003-FP — Portal utiliza HTTPS con certificado SSL valido
+  // Categoria: Backend (seguridad)
   // DADO el paciente navega a https://portalpaciente.bupa.cl/inicio
   // CUANDO se evalua el protocolo de la URL activa
   // ENTONCES el protocolo es https: confirmando certificado SSL valido
