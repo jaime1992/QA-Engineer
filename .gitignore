@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Environment
+.env
+.env.local
+.env.*.local
+cypress.env.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+dist/
+build/
+
+# Scripts con credenciales hardcodeadas
+scripts/
+
+# Claude local settings (personal, no compartir)
+.claude/settings.local.json

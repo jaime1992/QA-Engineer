@@ -1,0 +1,29 @@
+{
+  "name": "qa-engineer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx cypress run",
+    "test:smoke": "npx cypress run --spec 'cypress/e2e/Bupa-smoke_test.cy.js'",
+    "test:uat": "npx cypress run --env environment=uat",
+    "test:prod": "npx cypress run --env environment=prod",
+    "cy:open": "npx cypress open",
+    "email:start": "node email-server.js",
+    "lint": "echo 'lint ok'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "axe-core": "^4.11.4",
+    "cypress": "^15.15.0",
+    "cypress-axe": "^1.7.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "nodemailer": "^8.0.7"
+  }
+}
