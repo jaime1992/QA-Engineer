@@ -39,10 +39,13 @@ module.exports = defineConfig({
         const https = require("https");
         const http  = require("http");
 
+        const totalDuration = (results.runs || []).reduce((sum, r) => sum + (r.stats?.duration || 0), 0);
+
         const totalStats = {
           tests:    results.totalTests    || results.totalStats?.tests    || 0,
           passes:   results.totalPassed   || results.totalStats?.passes   || 0,
           failures: results.totalFailed   || results.totalStats?.failures || 0,
+          duration: totalDuration,
         };
 
         const payload = JSON.stringify({

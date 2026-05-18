@@ -1,0 +1,115 @@
+name: QA Pipeline — BUPA Portal Pacientes
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ── Stage 1: Install ────────────────────────────────────────────────────
+  install:
+    name: Install dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+  # ── Stage 2: Lint ───────────────────────────────────────────────────────
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+
+  # ── Stage 3: E2E Smoke — develop y main ─────────────────────────────────
+  e2e-smoke:
+    name: E2E Smoke — REQ-001
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          spec: cypress/e2e/Bupa-smoke_test.cy.js
+          config: pageLoadTimeout=60000,defaultCommandTimeout=15000
+        env:
+          CYPRESS_ENV: prod
+
+      - name: Guardar screenshots si hay fallos
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots-smoke-${{ github.run_number }}
+          path: cypress/screenshots/
+          retention-days: 7
+
+      - name: Guardar videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: videos-smoke-${{ github.run_number }}
+          path: cypress/videos/
+          retention-days: 3
+
+  # ── Stage 4: E2E Mobile — solo en develop ───────────────────────────────
+  e2e-mobile:
+    name: E2E Mobile — REQ-001 Mobile
+    needs: lint
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.base_ref == 'develop'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          spec: cypress/e2e/Bupa-mobile-smoke_test.cy.js
+          config: viewportWidth=375,viewportHeight=812,pageLoadTimeout=60000
+        env:
+          CYPRESS_ENV: prod
+
+      - name: Guardar screenshots si hay fallos
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots-mobile-${{ github.run_number }}
+          path: cypress/screenshots/
+          retention-days: 7
+
+  # ── Stage 5: Reporte final ───────────────────────────────────────────────
+  report:
+    name: Reporte de resultados
+    needs: [e2e-smoke]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Resumen del pipeline
+        run: |
+          echo "## QA Pipeline — Resultado" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Estado |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Smoke REQ-001 | ${{ needs.e2e-smoke.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Ejecutado por:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
