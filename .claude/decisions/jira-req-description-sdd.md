@@ -5,7 +5,7 @@
 
 ## Contexto
 
-Al crear un issue de Jira (Story o Task) para representar un requerimiento (REQ-BUPA-XXX), el ticket quedaba con descripcion minima o vacia. Quien abria el ticket en Jira tenia que buscar el archivo SDD local para entender el contexto completo del requerimiento.
+Al crear un issue de Jira (Story o Task) para representar un requerimiento (REQ-XXX), el ticket quedaba con descripcion minima o vacia. Quien abria el ticket en Jira tenia que buscar el archivo SDD local para entender el contexto completo del requerimiento.
 
 ## Decision
 
@@ -25,6 +25,5 @@ Las secciones a incluir son, en orden:
 ## Consecuencias
 
 - El issue de Jira es autosuficiente: cualquier miembro del equipo entiende el REQ sin acceder al repositorio local
-- El script de referencia para construir el ADF esta en `scripts/update-desc-bupa53.ps1`
 - La plantilla reutilizable esta en `templates/jira-req-issue-template.md`
-- Aplica a todos los REQs futuros: REQ-BUPA-002, REQ-BUPA-003, etc.
+- Aplica a todos los REQs de cualquier proyecto
