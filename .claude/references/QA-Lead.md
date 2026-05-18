@@ -104,4 +104,3 @@ Llegar preparado el primer día con una estrategia QA clara y un plan de acción
 ## Notas y Aprendizajes
 
 > Completar a partir del 8 de junio con lo que se descubra en terreno
-
