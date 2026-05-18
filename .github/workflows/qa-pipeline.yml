@@ -95,7 +95,27 @@ jobs:
           path: cypress/screenshots/
           retention-days: 7
 
-  # ── Stage 5: Reporte final ───────────────────────────────────────────────
+  # ── Stage 5: Notificar n8n WF-1.9 ──────────────────────────────────────
+  notify-n8n:
+    name: Notificar n8n — WF-1.9
+    needs: [e2e-smoke]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Enviar resultado a n8n
+        run: |
+          curl -s -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "status": "${{ needs.e2e-smoke.result }}",
+              "pipeline": "BUPA CI Feature",
+              "branch": "${{ github.ref_name }}",
+              "actor": "${{ github.actor }}",
+              "commit": "${{ github.sha }}",
+              "run_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }'
+
+  # ── Stage 6: Reporte final ───────────────────────────────────────────────
   report:
     name: Reporte de resultados
     needs: [e2e-smoke]

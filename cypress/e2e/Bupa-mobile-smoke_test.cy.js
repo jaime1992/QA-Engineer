@@ -22,7 +22,7 @@ describe('REQ-BUPA-001 | Mobile (375px) — Edge Cases', () => {
     cy.get('body').should('be.visible')
     cy.window().then((win) => {
       expect(win.document.documentElement.scrollWidth).to.be.lte(375)
-    })
+    })fsd sfdfs sdf
   })
 
 })
