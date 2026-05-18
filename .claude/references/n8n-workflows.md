@@ -25,22 +25,27 @@ Backup: `https://github.com/jaime1992/n8n_backup`
 
 ## WF-1.1 — Cypress Regression → Gmail
 
-**Que hace:** Recibe el resultado de una ejecucion Cypress via webhook y envia un email HTML con el reporte completo — verde si PASS, rojo si FAIL.
+**Que hace:** Al terminar una ejecucion Cypress, el hook `after:run` envia los resultados al **email-server.js** que genera y envia un email HTML con el reporte completo — verde si PASS, rojo si FAIL.
 
-**Trigger:** Webhook POST desde `cypress.config.js` al finalizar cada run (`after:run`)
-**Endpoint:** `http://localhost:3025/run-cypress-report`
+> ⚠️ Este WF NO usa n8n como intermediario. Cypress llama directamente al email-server.js.
+> El JSON del WF-1.1 en n8n existe como referencia pero el flujo activo bypasea n8n.
+
+**Trigger:** Hook `after:run` en `cypress.config.js` al finalizar cada run
+**Endpoint real:** `POST http://localhost:3025/run-cypress-report` → email-server.js
 **Salida:** Email HTML a `jaimeqv.2609@gmail.com`
 
-**Nodos:**
+**Flujo real activo:**
 ```
-Webhook Cypress → Procesar Resultados (Code) → Enviar Gmail (HTTP)
+Cypress after:run → POST localhost:3025/run-cypress-report → email-server.js → Gmail
 ```
 
 **Campos del email:**
-- Suite, fecha, stats (tests/passes/failures)
+- Asunto: `🧪 [WF-1.1] Cypress #Test Regresion# {spec} {PASS/FAIL} — {N}✅ {N}❌ | {fecha}`
+- Header verde (PASS) o rojo (FAIL)
+- Boxes: PASADOS / FALLADOS / PENDIENTES / DURACION
 - Tabla caso a caso: titulo, estado, duracion, error
 
-**Estado:** ✅ Activo — es el primer WF implementado, base del sistema
+**Estado:** ✅ Activo — funciona correctamente via email-server.js
 
 ---
 
@@ -224,12 +229,45 @@ Schedule Mar/Vie 4pm → Jira: Bugs Abiertos (HTTP)
 
 ---
 
+## email-server.js
+
+Servidor Express local que actua como intermediario entre Cypress y Gmail.
+Corre con pm2 en `http://localhost:3025`.
+
+**Archivo:** `c:\Quality_Assurance_IA\QA-Engineer\email-server.js`
+**Puerto:** 3025 (configurado en `.env`)
+**Gestionado por:** pm2 — `pm2 start email-server` / `pm2 restart email-server`
+
+**Endpoints:**
+
+| Endpoint | Metodo | Quien llama | Que hace |
+|----------|--------|-------------|----------|
+| `/run-cypress-report` | POST | Cypress `after:run` | Genera email HTML con reporte de tests |
+| `/send-email` | POST | Cualquier cliente | Envia email generico con `to`, `subject`, `body` |
+| `/health` | GET | Monitoreo | Verifica que el servidor esta UP |
+
+**Variables de entorno (.env):**
+```
+GMAIL_USER=jaimeqv.2609@gmail.com
+GMAIL_APP_PASSWORD=xxxx xxxx xxxx xxxx
+EMAIL_PORT=3025
+```
+
+**Comandos pm2:**
+```bash
+pm2 status                    # ver estado
+pm2 restart email-server      # reiniciar
+pm2 logs email-server         # ver logs
+```
+
+---
+
 ## Arquitectura general del sistema
 
 ```
 CYPRESS (tests E2E)
-  └── after:run → POST localhost:3025 → WF-1.1 → Email reporte
-  └── failure   → Webhook n8n        → WF-1.8 → WhatsApp + Email critico
+  └── after:run → POST localhost:3025/run-cypress-report → email-server.js → Gmail (WF-1.1)
+  └── failure   → Webhook n8n → WF-1.8 → WhatsApp + Email critico
 
 GITHUB ACTIONS (pipeline CI/CD)
   └── on finish → Webhook n8n        → WF-1.9 → Email + WhatsApp + Jira task (si falla)
