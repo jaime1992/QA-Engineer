@@ -96,7 +96,7 @@ Llegar preparado el primer día con una estrategia QA clara y un plan de acción
 
 - **Producto principal:** Portal de Pacientes BUPA Chile
 - **Regulación relevante:** Ley 19.628 (protección de datos personales)
-- **Stack inferido:** Angular (por contexto del proyecto) — confirmar el día 8
+- **Stack inferido:** Angular (por contexto del proyecto)
 - **Flujos críticos estimados:** carga del portal, login, recuperación de contraseña
 
 ---
