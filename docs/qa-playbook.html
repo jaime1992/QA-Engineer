@@ -830,6 +830,56 @@
     .shift-grid { grid-template-columns: 1fr; }
     .brand-info h1 { font-size: 18px; }
   }
+
+  /* ── PRINT ── */
+  @media print {
+    @page {
+      size: A4;
+      margin: 14mm 12mm 14mm 12mm;
+    }
+
+    /* Forzar colores al imprimir */
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    /* Ocultar elementos de navegacion */
+    .nav, .breadcrumb, .toggle-btn, .footer { display: none !important; }
+
+    /* Mostrar todas las tabs y fases expandidas */
+    .tab-content { display: block !important; }
+    .phase-body-wrap { max-height: none !important; overflow: visible !important; }
+
+    /* Quitar sombras — no se ven bien en PDF */
+    .phase-card, .kpi-card, .tool-card, .wf-card { box-shadow: none !important; }
+
+    /* Evitar cortes de pagina dentro de una card */
+    .phase-card, .kpi-card, .tool-card, .wf-card, .shift-cat { break-inside: avoid; page-break-inside: avoid; }
+
+    /* Salto de pagina antes de cada seccion principal */
+    .section-header { break-before: page; page-break-before: always; }
+    .section-header:first-of-type { break-before: avoid; page-break-before: avoid; }
+
+    /* Ajustar grids al ancho de la pagina */
+    .kpi-grid   { grid-template-columns: repeat(3, 1fr) !important; }
+    .tools-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .wf-grid    { grid-template-columns: repeat(2, 1fr) !important; }
+    .shift-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .phase-body { grid-template-columns: 1fr 1fr !important; }
+
+    /* Header compacto */
+    .header { padding: 14px 20px !important; border-bottom: 2px solid var(--blue) !important; }
+    .main   { padding: 16px 20px !important; }
+
+    /* Reducir fuentes levemente para que entre mas contenido */
+    body         { font-size: 12px !important; }
+    .phase-name  { font-size: 13px !important; }
+    .brand-info h1 { font-size: 18px !important; }
+
+    /* Ocultar animaciones */
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+
+    /* Mostrar URL de spec como texto visible */
+    .artifact-chip, .stack-chip { border: 1px solid var(--border-dark) !important; }
+  }
 </style>
 </head>
 <body>
