@@ -76,7 +76,7 @@ Las pruebas están completas cuando:
 | Dato | Valor | Ambiente | Notas |
 |------|-------|----------|-------|
 | URL del portal | `https://portalpaciente.bupa.cl/inicio` | PROD | |
-| URL UAT | Por confirmar con equipo | UAT | |
+| URL UAT | `https://portalpaciente.bupa.cl/inicio` | UAT | Provisional — usar PROD mientras se confirma URL UAT real |
 | Usuario de prueba | Ver gestor de credenciales | UAT | No usar en PROD |
 | Contraseña | Ver gestor de credenciales | UAT | No registrar aquí |
 | Resolución desktop | 1280x720 | UAT / PROD | Resolución base |
