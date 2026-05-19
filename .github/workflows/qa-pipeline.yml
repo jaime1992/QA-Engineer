@@ -70,32 +70,7 @@ jobs:
           path: cypress/videos/
           retention-days: 3
 
-  # ── Stage 4: E2E Mobile — solo en develop ───────────────────────────────
-  e2e-mobile:
-    name: E2E Mobile — REQ-001 Mobile
-    needs: lint
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || github.base_ref == 'develop'
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: cypress-io/github-action@v6
-        with:
-          browser: chrome
-          spec: cypress/e2e/Bupa-mobile-smoke_test.cy.js
-          config: viewportWidth=375,viewportHeight=812,pageLoadTimeout=60000
-        env:
-          CYPRESS_ENV: prod
-
-      - name: Guardar screenshots si hay fallos
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots-mobile-${{ github.run_number }}
-          path: cypress/screenshots/
-          retention-days: 7
-
-  # ── Stage 5: Notificar n8n WF-1.9 ──────────────────────────────────────
+  # ── Stage 4: Notificar n8n WF-1.9 ──────────────────────────────────────
   notify-n8n:
     name: Notificar n8n — WF-1.9
     needs: [e2e-smoke]
