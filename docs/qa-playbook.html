@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Playbook — BUPA Chile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:        #0066CC;
+    --blue-dark:   #004EA3;
+    --blue-light:  #EBF4FF;
+    --blue-mid:    #CCE3F7;
+    --bg:          #F3F7FB;
+    --card:        #FFFFFF;
+    --border:      #D8E8F4;
+    --border-dark: #B8D0E8;
+    --text:        #0F2137;
+    --text-2:      #3D5A73;
+    --text-3:      #7A98B0;
+    --text-4:      #A8BFD0;
+    --green:       #00875A;
+    --green-bg:    #E6F5EF;
+    --yellow:      #946200;
+    --yellow-bg:   #FFF3CD;
+    --red:         #BF2600;
+    --red-bg:      #FFEBE6;
+    --purple:      #5243AA;
+    --purple-bg:   #EAE6FF;
+    --cyan:        #0052CC;
+    --shadow-sm:   0 1px 3px rgba(0,50,100,0.08), 0 1px 2px rgba(0,50,100,0.04);
+    --shadow-md:   0 4px 12px rgba(0,50,100,0.10), 0 2px 4px rgba(0,50,100,0.06);
+    --shadow-lg:   0 8px 24px rgba(0,50,100,0.12), 0 4px 8px rgba(0,50,100,0.06);
+    --radius:      10px;
+    --radius-sm:   6px;
+    --mono:        'JetBrains Mono', monospace;
+    --sans:        'Plus Jakarta Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 28px 48px;
+  }
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* ── ANIMATED BUPA LOGO SVG ── */
+  .bupa-logo-wrap {
+    position: relative;
+    width: 88px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+  .bupa-logo-wrap svg { width: 100%; height: 100%; overflow: visible; }
+  .logo-bg {
+    fill: var(--blue);
+    rx: 10;
+  }
+  .ecg-path {
+    fill: none;
+    stroke: rgba(255,255,255,0.9);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 120;
+    stroke-dashoffset: 120;
+    animation: ecgDraw 2.4s ease-in-out infinite;
+  }
+  @keyframes ecgDraw {
+    0%   { stroke-dashoffset: 120; opacity: 1; }
+    60%  { stroke-dashoffset: -120; opacity: 1; }
+    80%  { stroke-dashoffset: -120; opacity: 0; }
+    100% { stroke-dashoffset: 120; opacity: 0; }
+  }
+  .pulse-ring {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 1.5;
+    transform-origin: 44px 28px;
+    animation: pulseRing 2.4s ease-out infinite;
+  }
+  @keyframes pulseRing {
+    0%   { r: 32; opacity: 0.5; }
+    100% { r: 52; opacity: 0; }
+  }
+  .logo-text-bupa {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: 18px;
+    fill: white;
+    letter-spacing: 1.5px;
+  }
+  .logo-cross-v { fill: rgba(255,255,255,0.25); }
+
+  .brand-info h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .brand-info h1 span { color: var(--blue); }
+  .brand-info p {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-top: 3px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .meta-tag {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border-dark);
+    background: var(--bg);
+    color: var(--text-2);
+  }
+  .meta-tag.blue {
+    background: var(--blue-light);
+    border-color: var(--blue-mid);
+    color: var(--blue-dark);
+    font-weight: 600;
+  }
+  .meta-tag.version {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: white;
+    font-weight: 700;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    background: var(--card);
+    border-bottom: 2px solid var(--border);
+    padding: 0 48px;
+  }
+  .nav-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 14px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.1px;
+  }
+  .nav-tab:hover { color: var(--blue); }
+  .nav-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ── BREADCRUMB ── */
+  .breadcrumb {
+    padding: 12px 48px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .breadcrumb-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-3);
+    font-family: var(--mono);
+  }
+  .breadcrumb-inner span { color: var(--text-3); }
+  .breadcrumb-inner .current { color: var(--blue); font-weight: 500; }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 32px 48px 60px;
+  }
+
+  /* ── TAB CONTENT ── */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    margin-bottom: 28px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .section-desc {
+    font-size: 13.5px;
+    color: var(--text-2);
+    margin-top: 6px;
+    max-width: 700px;
+    line-height: 1.6;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline { display: flex; flex-direction: column; gap: 0; }
+
+  .phase-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    position: relative;
+  }
+  .connector-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .connector-line {
+    width: 2px;
+    height: 16px;
+    background: linear-gradient(180deg, var(--blue) 0%, var(--border-dark) 100%);
+  }
+  .connector-chevron {
+    width: 0; height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 8px solid var(--border-dark);
+  }
+
+  /* ── PHASE CARD ── */
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.25s, border-color 0.25s;
+  }
+  .phase-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-dark);
+  }
+  .phase-card-top {
+    height: 4px;
+    background: var(--phase-color, var(--blue));
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px 16px;
+    cursor: pointer;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,102,204,0.015);
+  }
+  .phase-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .phase-num-badge {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--phase-color, var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .phase-num-badge span {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+  }
+  .phase-titles .phase-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.1px;
+  }
+  .phase-titles .phase-role {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 1px;
+    font-weight: 500;
+  }
+  .phase-tags {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .tag {
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .tag-blue   { background: var(--blue-light); color: var(--blue-dark); border: 1px solid var(--blue-mid); }
+  .tag-green  { background: var(--green-bg);   color: var(--green);     border: 1px solid #B3DFD0; }
+  .tag-purple { background: var(--purple-bg);  color: var(--purple);    border: 1px solid #C5BAF3; }
+  .tag-gray   { background: var(--bg);         color: var(--text-2);    border: 1px solid var(--border-dark); }
+
+  .toggle-btn {
+    width: 28px; height: 28px;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    border: 1px solid var(--border-dark);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-3);
+    font-size: 11px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-btn:hover { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); }
+
+  /* ── PHASE BODY ── */
+  .phase-body-wrap { overflow: hidden; transition: max-height 0.4s ease; }
+  .phase-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .phase-body.full { grid-template-columns: 1fr; }
+  .phase-body.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  .body-col {}
+  .col-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .col-label .col-dot {
+    width: 4px; height: 16px;
+    border-radius: 2px;
+    background: var(--phase-color, var(--blue));
+    flex-shrink: 0;
+  }
+
+  /* ── ITEM LIST ── */
+  .item-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .item-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  .item-list li .ic {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .ic-blue   { background: var(--blue-light); color: var(--blue); }
+  .ic-green  { background: var(--green-bg);   color: var(--green); }
+  .ic-gray   { background: var(--bg);          color: var(--text-3); border: 1px solid var(--border-dark); }
+  .item-list li strong { color: var(--text); font-weight: 600; }
+  .item-list li code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ── ARTIFACT BOX ── */
+  .artifact-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: 14px;
+  }
+  .artifact-title {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 10px;
+  }
+  .artifact-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .artifact-chip {
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    border: 1px solid var(--border-dark);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-2);
+    font-family: var(--mono);
+  }
+
+  /* ── BOARD FLOW ── */
+  .board-flow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .board-state {
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--blue-light);
+    border: 1px solid var(--blue-mid);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--blue-dark);
+    font-family: var(--mono);
+  }
+  .board-arrow {
+    color: var(--text-4);
+    font-size: 12px;
+    padding: 0 2px;
+  }
+
+  /* ── SHIFT-LEFT CATEGORIES ── */
+  .shift-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .shift-cat {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    border-left: 3px solid var(--cat-color);
+  }
+  .shift-cat-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cat-color);
+    margin-bottom: 8px;
+  }
+
+  /* ── PIPELINE STAGES ── */
+  .stages-list { display: flex; flex-direction: column; gap: 6px; }
+  .stage-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.2s;
+  }
+  .stage-row:hover { border-color: var(--border-dark); }
+  .stage-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-3);
+    min-width: 50px;
+    font-weight: 500;
+  }
+  .stage-desc { flex: 1; font-size: 12.5px; color: var(--text-2); }
+  .stage-tool {
+    font-size: 11px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* ── DECISION ROW ── */
+  .decision-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .decision-box {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+  }
+  .decision-box.fail {
+    background: var(--red-bg);
+    border: 1px solid #F4C5BD;
+  }
+  .decision-box.pass {
+    background: var(--green-bg);
+    border: 1px solid #B3DFD0;
+  }
+  .decision-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .decision-box.fail .decision-label { color: var(--red); }
+  .decision-box.pass .decision-label { color: var(--green); }
+  .decision-box p { font-size: 12.5px; color: var(--text-2); }
+
+  /* ── MINI TABLE ── */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .mini-table { width: 100%; border-collapse: collapse; }
+  .mini-table th {
+    background: var(--bg);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .mini-table td {
+    padding: 9px 14px;
+    font-size: 12.5px;
+    color: var(--text-2);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .mini-table tr:last-child td { border-bottom: none; }
+  .mini-table td code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .pass-crit { color: var(--green); font-size: 11.5px; font-family: var(--mono); }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-dark); }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--kpi-color, var(--blue));
+  }
+  .kpi-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 12px;
+  }
+  .kpi-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--kpi-color, var(--blue));
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .kpi-bar-track {
+    height: 5px;
+    background: var(--bg);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .kpi-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--kpi-color, var(--blue));
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .kpi-desc {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  /* ── TOOLS GRID ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .tool-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-dark); }
+  .tool-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .tool-icon {
+    width: 40px; height: 40px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .tool-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .tool-type {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 1px;
+    font-weight: 500;
+  }
+  .tool-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .tool-uses { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tool-use-chip {
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border-dark);
+    font-size: 11px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  /* ── WORKFLOWS ── */
+  .wf-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .wf-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 18px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .wf-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-dark); }
+  .wf-card-top {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+  }
+  .wf-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--blue-mid);
+    white-space: nowrap;
+  }
+  .wf-title { font-size: 13.5px; font-weight: 700; color: var(--text); line-height: 1.4; }
+  .wf-desc { font-size: 12.5px; color: var(--text-2); line-height: 1.5; }
+  .wf-freq {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-3);
+    background: var(--bg);
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    align-self: flex-start;
+  }
+  .wf-phase {
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 20px 48px;
+  }
+  .footer-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-text { font-size: 12px; color: var(--text-3); }
+  .footer-stack { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stack-chip {
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border-dark);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .phase-card { animation: fadeInUp 0.4s ease both; }
+  .phase-card:nth-child(1)  { animation-delay: 0.05s; }
+  .phase-card:nth-child(3)  { animation-delay: 0.10s; }
+  .phase-card:nth-child(5)  { animation-delay: 0.15s; }
+  .phase-card:nth-child(7)  { animation-delay: 0.20s; }
+  .phase-card:nth-child(9)  { animation-delay: 0.25s; }
+  .phase-card:nth-child(11) { animation-delay: 0.30s; }
+  .phase-card:nth-child(13) { animation-delay: 0.35s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1200px) {
+    .kpi-grid   { grid-template-columns: repeat(3, 1fr); }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    .wf-grid    { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .header, .nav, .breadcrumb, .footer { padding-left: 20px; padding-right: 20px; }
+    .main { padding: 24px 20px 48px; }
+    .phase-body, .phase-body.three { grid-template-columns: 1fr; }
+    .kpi-grid   { grid-template-columns: repeat(2, 1fr); }
+    .tools-grid { grid-template-columns: 1fr; }
+    .wf-grid    { grid-template-columns: 1fr; }
+    .shift-grid { grid-template-columns: 1fr; }
+    .brand-info h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+
+      <!-- ANIMATED BUPA LOGO -->
+      <div class="bupa-logo-wrap">
+        <svg viewBox="0 0 88 56" xmlns="http://www.w3.org/2000/svg">
+          <!-- Pulse ring -->
+          <circle class="pulse-ring" cx="44" cy="28" r="32"/>
+          <!-- Background rect -->
+          <rect x="4" y="4" width="80" height="48" rx="10" fill="#0066CC"/>
+          <!-- Health cross -->
+          <rect x="12" y="22" width="16" height="12" rx="3" fill="rgba(255,255,255,0.18)"/>
+          <rect x="16" y="18" width="8" height="20" rx="3" fill="rgba(255,255,255,0.18)"/>
+          <!-- BUPA text -->
+          <text x="34" y="33" class="logo-text-bupa">BUPA</text>
+          <!-- ECG line -->
+          <polyline class="ecg-path"
+            points="4,38 16,38 20,28 24,46 28,22 32,38 44,38 88,38"
+            transform="translate(0,0)"/>
+        </svg>
+      </div>
+
+      <div class="brand-info">
+        <h1><span>BUPA Chile</span> · QA Playbook</h1>
+        <p>Marco de trabajo QA · Metodología SDD · Pipeline CI/CD · Automatización n8n</p>
+      </div>
+    </div>
+
+    <div class="header-meta">
+      <div class="meta-tag">QA Lead: Jaime Quiñelen Villar</div>
+      <div class="meta-tag blue">BUPA Chile · Portal Pacientes</div>
+      <div class="meta-tag version">v1.0 · Mayo 2026</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-tab active" onclick="switchTab('pipeline', this)">Proceso QA — 7 Fases</div>
+    <div class="nav-tab" onclick="switchTab('kpis', this)">KPIs Gerenciales</div>
+    <div class="nav-tab" onclick="switchTab('tools', this)">Herramientas</div>
+    <div class="nav-tab" onclick="switchTab('workflows', this)">Workflows de Automatización</div>
+  </div>
+</nav>
+
+<!-- ══════════ BREADCRUMB ══════════ -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <span>BUPA Chile</span>
+    <span>›</span>
+    <span>Quality Assurance</span>
+    <span>›</span>
+    <span class="current" id="bc-current">Proceso QA — 7 Fases</span>
+  </div>
+</div>
+
+<!-- ══════════ MAIN ══════════ -->
+<main class="main">
+
+  <!-- ════ TAB: PIPELINE ════ -->
+  <div id="tab-pipeline" class="tab-content active">
+    <div class="section-header">
+      <div class="section-label">Marco de Trabajo</div>
+      <div class="section-title">Proceso QA — 7 Fases</div>
+      <div class="section-desc">Flujo completo de aseguramiento de calidad desde la recepción del requerimiento hasta el cierre con métricas gerenciales. El QA Lead lidera cada fase, coordinando con el equipo de desarrollo y los stakeholders.</div>
+    </div>
+
+    <div class="pipeline">
+
+      <!-- FASE 1 -->
+      <div class="phase-card" style="--phase-color: #0066CC">
+        <div class="phase-card-top" style="background:#0066CC"></div>
+        <div class="phase-header" onclick="togglePhase(this)">
+          <div class="phase-header-left">
+            <div class="phase-num-badge" style="background:#0066CC"><span>F1</span></div>
+            <div class="phase-titles">
+              <div class="phase-name">Requerimiento</div>
+              <div class="phase-role">QA Lead · Jira + Metodología SDD</div>
+            </div>
+          </div>
+          <div class="phase-tags">
+            <span class="tag tag-blue">SDD</span>
+            <span class="tag tag-blue">Jira</span>
+            <span class="tag tag-green">Entrada al proceso</span>
+          </div>
+          <button class="toggle-btn">▼</button>
+        </div>
+        <div class="phase-body-wrap">
+          <div class="phase-body">
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#0066CC"></span>Actividades del QA Lead</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> Recibe requerimiento de stakeholders o PM</li>
+                <li><span class="ic ic-blue">→</span> Crea <strong>Epic</strong> y <strong>Story</strong> en Jira con descripción funcional completa</li>
+                <li><span class="ic ic-blue">→</span> Documenta el <strong>SDD completo</strong> (9 secciones) en la descripción del ticket: objetivo, alcance, actores, flujos, criterios de aceptación, riesgos, datos de prueba, entornos y restricciones</li>
+                <li><span class="ic ic-blue">→</span> Activa el workflow de generación automática del PDF del SDD y notificación al equipo</li>
+                <li><span class="ic ic-blue">→</span> Avanza el ticket en el board de Jira</li>
+              </ul>
+              <div class="board-flow">
+                <span class="board-state">BACKLOG</span>
+                <span class="board-arrow">→</span>
+                <span class="board-state">SDD EN PROCESO</span>
+              </div>
+            </div>
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#0066CC"></span>Artefactos Producidos</div>
+              <div class="artifact-box">
+                <div class="artifact-title">Entregables</div>
+                <div class="artifact-chips">
+                  <span class="artifact-chip">SDD.md (9 secciones)</span>
+                  <span class="artifact-chip">Jira Epic</span>
+                  <span class="artifact-chip">Jira Story</span>
+                  <span class="artifact-chip">PDF del SDD</span>
+                </div>
+              </div>
+              <div class="artifact-box" style="margin-top:10px">
+                <div class="artifact-title">Herramientas</div>
+                <div class="artifact-chips">
+                  <span class="artifact-chip">Jira</span>
+                  <span class="artifact-chip">n8n (WF generación SDD)</span>
+                  <span class="artifact-chip">Gmail</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="connector-body"><div class="connector-line"></div><div class="connector-chevron"></div></div></div>
+
+      <!-- FASE 2 -->
+      <div class="phase-card" style="--phase-color: #0080CC">
+        <div class="phase-card-top" style="background:#0080CC"></div>
+        <div class="phase-header" onclick="togglePhase(this)">
+          <div class="phase-header-left">
+            <div class="phase-num-badge" style="background:#0080CC"><span>F2</span></div>
+            <div class="phase-titles">
+              <div class="phase-name">Diseño de Pruebas</div>
+              <div class="phase-role">QA Lead · Test Plans + Xray</div>
+            </div>
+          </div>
+          <div class="phase-tags">
+            <span class="tag tag-blue">Test Plan</span>
+            <span class="tag tag-blue">Xray</span>
+            <span class="tag tag-purple">Manual + Automatizado</span>
+          </div>
+          <button class="toggle-btn">▼</button>
+        </div>
+        <div class="phase-body-wrap">
+          <div class="phase-body">
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#0080CC"></span>Casos de Prueba</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> Define casos de prueba con nomenclatura estándar:</li>
+              </ul>
+              <div class="table-wrap" style="margin-top:10px">
+                <table class="mini-table">
+                  <thead><tr><th>Tipo</th><th>Código</th><th>Descripción</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Happy Path</strong></td><td><code>TC-XXX-FP</code></td><td>Flujo principal exitoso del requerimiento</td></tr>
+                    <tr><td><strong>Edge Case</strong></td><td><code>TC-XXX-EC</code></td><td>Casos límite, errores y comportamientos alternativos</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-label" style="margin-top:18px"><span class="col-dot" style="background:#0080CC"></span>Plan de Pruebas Manuales</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> <strong>Flujos principales</strong> que requieren verificación humana (visual, experiencia de usuario)</li>
+                <li><span class="ic ic-blue">→</span> <strong>Edge cases</strong> que requieren configuración especial de ambiente (DevOps, throttling de red, estados simulados)</li>
+              </ul>
+            </div>
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#0080CC"></span>Plan de Pruebas Automatizadas — Cypress</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> Identifica los TCs automatizables (flujos deterministas y repetibles)</li>
+                <li><span class="ic ic-blue">→</span> Define <strong>criterios PASS/FAIL explícitos</strong> por TC antes de escribir el spec</li>
+                <li><span class="ic ic-blue">→</span> Carga TCs en <strong>Xray</strong>: TestPlan + TestExecution por requerimiento</li>
+              </ul>
+              <div class="artifact-box">
+                <div class="artifact-title">Artefactos</div>
+                <div class="artifact-chips">
+                  <span class="artifact-chip">Test-Plan.md</span>
+                  <span class="artifact-chip">TCs en Xray</span>
+                  <span class="artifact-chip">Criterios PASS/FAIL</span>
+                  <span class="artifact-chip">Matriz REQ vs TC</span>
+                </div>
+              </div>
+              <div class="board-flow">
+                <span class="board-state">SDD EN PROCESO</span>
+                <span class="board-arrow">→</span>
+                <span class="board-state">READY TO DEV</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="connector-body"><div class="connector-line"></div><div class="connector-chevron"></div></div></div>
+
+      <!-- FASE 3 -->
+      <div class="phase-card" style="--phase-color: #007AB8">
+        <div class="phase-card-top" style="background:#007AB8"></div>
+        <div class="phase-header" onclick="togglePhase(this)">
+          <div class="phase-header-left">
+            <div class="phase-num-badge" style="background:#007AB8"><span>F3</span></div>
+            <div class="phase-titles">
+              <div class="phase-name">Desarrollo + Shift-Left</div>
+              <div class="phase-role">Dev Team implementa · QA Lead revisa cobertura por categoría</div>
+            </div>
+          </div>
+          <div class="phase-tags">
+            <span class="tag tag-blue">Shift-Left</span>
+            <span class="tag tag-purple">4 Categorías</span>
+            <span class="tag tag-gray">Dev → QA aprueba → PR</span>
+          </div>
+          <button class="toggle-btn">▼</button>
+        </div>
+        <div class="phase-body-wrap">
+          <div class="phase-body">
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#007AB8"></span>Rol del QA Lead — Revisión Shift-Left</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> El equipo de desarrollo implementa la funcionalidad y escribe pruebas unitarias</li>
+                <li><span class="ic ic-blue">→</span> El QA Lead <strong>revisa la cobertura de unit tests por categoría</strong> antes de permitir el Code Review</li>
+                <li><span class="ic ic-blue">→</span> Si la cobertura es insuficiente, solicita más tests antes de avanzar</li>
+                <li><span class="ic ic-blue">→</span> QA aprueba → Code Review → PR abierto → pipeline se activa automáticamente</li>
+              </ul>
+              <div class="board-flow">
+                <span class="board-state">READY TO DEV</span>
+                <span class="board-arrow">→</span>
+                <span class="board-state">CODE REVIEW/PR</span>
+              </div>
+            </div>
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#007AB8"></span>Revisión por Categoría</div>
+              <div class="shift-grid">
+                <div class="shift-cat" style="--cat-color: #E01E5A">
+                  <div class="shift-cat-name">UX</div>
+                  <ul class="item-list">
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Tests cubren flujos de navegación del usuario?</li>
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Hay test de secuencias de interacción (Tab, focus)?</li>
+                  </ul>
+                </div>
+                <div class="shift-cat" style="--cat-color: #E8750A">
+                  <div class="shift-cat-name">UI</div>
+                  <ul class="item-list">
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Tests de render de componentes visuales?</li>
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Tests de atributos ARIA y contraste?</li>
+                  </ul>
+                </div>
+                <div class="shift-cat" style="--cat-color: #0066CC">
+                  <div class="shift-cat-name">Frontend</div>
+                  <ul class="item-list">
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Tests del bootstrap del framework (Angular)?</li>
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Tests de lógica de componentes y validaciones?</li>
+                  </ul>
+                </div>
+                <div class="shift-cat" style="--cat-color: #00875A">
+                  <div class="shift-cat-name">Backend</div>
+                  <ul class="item-list">
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Tests de respuesta API y contratos?</li>
+                    <li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>¿Tests de seguridad (SSL, HTTPS, redirect)?</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="connector-body"><div class="connector-line"></div><div class="connector-chevron"></div></div></div>
+
+      <!-- FASE 4 -->
+      <div class="phase-card" style="--phase-color: #5243AA">
+        <div class="phase-card-top" style="background:#5243AA"></div>
+        <div class="phase-header" onclick="togglePhase(this)">
+          <div class="phase-header-left">
+            <div class="phase-num-badge" style="background:#5243AA"><span>F4</span></div>
+            <div class="phase-titles">
+              <div class="phase-name">Pipeline CI/CD</div>
+              <div class="phase-role">GitHub Actions · Cypress · Trigger: push/PR a ramas principales</div>
+            </div>
+          </div>
+          <div class="phase-tags">
+            <span class="tag tag-purple">7 Stages</span>
+            <span class="tag tag-blue">GitHub Actions</span>
+            <span class="tag tag-blue">Cypress</span>
+          </div>
+          <button class="toggle-btn">▼</button>
+        </div>
+        <div class="phase-body-wrap">
+          <div class="phase-body">
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#5243AA"></span>Stages del Pipeline</div>
+              <div class="stages-list">
+                <div class="stage-row">
+                  <span class="stage-num">Stage 1</span>
+                  <span class="stage-desc">Instalación de dependencias del proyecto</span>
+                  <span class="stage-tool">npm ci</span>
+                </div>
+                <div class="stage-row">
+                  <span class="stage-num">Stage 2</span>
+                  <span class="stage-desc">Análisis estático de código (linting)</span>
+                  <span class="stage-tool">ESLint</span>
+                </div>
+                <div class="stage-row">
+                  <span class="stage-num">Stage 3</span>
+                  <span class="stage-desc">E2E Smoke Tests — flujo principal de cada REQ</span>
+                  <span class="stage-tool">Cypress</span>
+                </div>
+                <div class="stage-row">
+                  <span class="stage-num">Stage 4</span>
+                  <span class="stage-desc">E2E Flujos Críticos — casos de mayor riesgo por REQ</span>
+                  <span class="stage-tool">Cypress</span>
+                </div>
+                <div class="stage-row">
+                  <span class="stage-num">Stage 5</span>
+                  <span class="stage-desc">E2E Mobile — viewport reducido (solo rama develop)</span>
+                  <span class="stage-tool">Cypress</span>
+                </div>
+                <div class="stage-row">
+                  <span class="stage-num">Stage 6</span>
+                  <span class="stage-desc">Notificación del resultado al sistema de workflows</span>
+                  <span class="stage-tool">n8n webhook</span>
+                </div>
+                <div class="stage-row">
+                  <span class="stage-num">Stage 7</span>
+                  <span class="stage-desc">Reporte de resultados en GitHub Step Summary</span>
+                  <span class="stage-tool">GitHub Actions</span>
+                </div>
+              </div>
+            </div>
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#5243AA"></span>Resultado del Pipeline</div>
+              <div class="decision-row" style="flex-direction:column">
+                <div class="decision-box fail">
+                  <div class="decision-label">Fallo</div>
+                  <p>El workflow de alertas notifica automáticamente por email, mensajería y abre un defecto en Jira con prioridad máxima</p>
+                </div>
+                <div class="decision-box pass">
+                  <div class="decision-label">Éxito</div>
+                  <p>El pipeline notifica el resultado y el proceso continúa hacia la Fase 5 — Test UAT</p>
+                </div>
+              </div>
+              <div class="artifact-box" style="margin-top:14px">
+                <div class="artifact-title">Artefactos generados</div>
+                <div class="artifact-chips">
+                  <span class="artifact-chip">Screenshots de fallos</span>
+                  <span class="artifact-chip">Videos de ejecución</span>
+                  <span class="artifact-chip">GitHub Step Summary</span>
+                  <span class="artifact-chip">Notificación n8n</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="connector-body"><div class="connector-line"></div><div class="connector-chevron"></div></div></div>
+
+      <!-- FASE 5 -->
+      <div class="phase-card" style="--phase-color: #00875A">
+        <div class="phase-card-top" style="background:#00875A"></div>
+        <div class="phase-header" onclick="togglePhase(this)">
+          <div class="phase-header-left">
+            <div class="phase-num-badge" style="background:#00875A"><span>F5</span></div>
+            <div class="phase-titles">
+              <div class="phase-name">Test UAT</div>
+              <div class="phase-role">QA Lead · Ambiente staging · Pruebas manuales y automatizadas</div>
+            </div>
+          </div>
+          <div class="phase-tags">
+            <span class="tag tag-green">Staging</span>
+            <span class="tag tag-blue">Cypress</span>
+            <span class="tag tag-purple">Manual + Automatizado</span>
+          </div>
+          <button class="toggle-btn">▼</button>
+        </div>
+        <div class="phase-body-wrap">
+          <div class="phase-body">
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#00875A"></span>Pruebas Manuales por Categoría</div>
+              <div class="shift-grid">
+                <div class="shift-cat" style="--cat-color: #E01E5A">
+                  <div class="shift-cat-name">UX</div>
+                  <ul class="item-list"><li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>Exploración de flujos, estados vacíos, usabilidad</li></ul>
+                </div>
+                <div class="shift-cat" style="--cat-color: #E8750A">
+                  <div class="shift-cat-name">UI</div>
+                  <ul class="item-list"><li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>Revisión visual vs diseño de referencia (Figma)</li></ul>
+                </div>
+                <div class="shift-cat" style="--cat-color: #0066CC">
+                  <div class="shift-cat-name">Frontend</div>
+                  <ul class="item-list"><li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>Validaciones en navegador, comportamiento del framework</li></ul>
+                </div>
+                <div class="shift-cat" style="--cat-color: #00875A">
+                  <div class="shift-cat-name">Backend</div>
+                  <ul class="item-list"><li style="font-size:12px"><span class="ic ic-gray" style="font-size:8px">→</span>Validación de API, contratos y seguridad SSL</li></ul>
+                </div>
+              </div>
+              <ul class="item-list" style="margin-top:10px">
+                <li><span class="ic ic-blue">→</span> Resultado manual → registra en Xray → workflow de estado diario notifica al equipo</li>
+              </ul>
+            </div>
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#00875A"></span>Pruebas Automatizadas — Cypress</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> <strong>Smoke Tests</strong> — flujo principal por REQ → reporte HTML → email automático</li>
+                <li><span class="ic ic-blue">→</span> <strong>Flujos Críticos</strong> — casos de mayor riesgo → alerta inmediata si falla (Jira + email + mensajería)</li>
+                <li><span class="ic ic-blue">→</span> <strong>Mobile</strong> — viewport reducido → reporte HTML → email automático</li>
+              </ul>
+              <div class="decision-row">
+                <div class="decision-box fail">
+                  <div class="decision-label">Bug encontrado</div>
+                  <p>Abre defecto en Jira · El proceso regresa a la Fase 3</p>
+                </div>
+                <div class="decision-box pass">
+                  <div class="decision-label">Aprobado</div>
+                  <p>Avanza a la Fase 6 — Test en Producción</p>
+                </div>
+              </div>
+              <div class="board-flow">
+                <span class="board-state">CODE REVIEW/PR</span>
+                <span class="board-arrow">→</span>
+                <span class="board-state">TEST UAT</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="connector-body"><div class="connector-line"></div><div class="connector-chevron"></div></div></div>
+
+      <!-- FASE 6 -->
+      <div class="phase-card" style="--phase-color: #BF2600">
+        <div class="phase-card-top" style="background:#BF2600"></div>
+        <div class="phase-header" onclick="togglePhase(this)">
+          <div class="phase-header-left">
+            <div class="phase-num-badge" style="background:#BF2600"><span>F6</span></div>
+            <div class="phase-titles">
+              <div class="phase-name">Test Producción</div>
+              <div class="phase-role">QA Lead · Ambiente PROD · Solo flujo principal SDD + flujos críticos</div>
+            </div>
+          </div>
+          <div class="phase-tags">
+            <span class="tag tag-gray">Solo PROD</span>
+            <span class="tag tag-blue">Flujo principal + Críticos</span>
+            <span class="tag tag-green">Monitoreo continuo</span>
+          </div>
+          <button class="toggle-btn">▼</button>
+        </div>
+        <div class="phase-body-wrap">
+          <div class="phase-body">
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#BF2600"></span>Alcance en Producción</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> Se ejecutan <strong>únicamente</strong> los casos E2E del flujo principal del SDD (Happy Path)</li>
+                <li><span class="ic ic-blue">→</span> Se ejecutan los <strong>flujos críticos</strong> de mayor riesgo funcional definidos por REQ</li>
+                <li><span class="ic ic-blue">→</span> <strong>No se ejecutan edge cases</strong> que requieran configuración especial de ambiente en PROD</li>
+                <li><span class="ic ic-blue">→</span> Workflow de <strong>health check automático</strong> cada hora verifica disponibilidad de ambientes y alerta si hay caída</li>
+                <li><span class="ic ic-blue">→</span> Workflow de <strong>resultado post-pipeline</strong> notifica a QA Lead por email y mensajería</li>
+              </ul>
+              <div class="board-flow">
+                <span class="board-state">TEST UAT</span>
+                <span class="board-arrow">→</span>
+                <span class="board-state">TEST PRODUCCION</span>
+                <span class="board-arrow">→</span>
+                <span class="board-state">DONE</span>
+              </div>
+            </div>
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#BF2600"></span>Resultado en Producción</div>
+              <div class="decision-row" style="flex-direction:column">
+                <div class="decision-box fail">
+                  <div class="decision-label">Defecto en PROD — Escaped Defect</div>
+                  <p>Se registra como defecto escapado con clasificación <code style="font-family:var(--mono);font-size:11px;color:var(--red);background:var(--red-bg);padding:1px 5px;border-radius:3px">found-in: PROD</code> en Jira · Se abre incidente urgente · Impacta la métrica de Escaped Defects</p>
+                </div>
+                <div class="decision-box pass">
+                  <div class="decision-label">Aprobado</div>
+                  <p>Ticket avanza a DONE · El requerimiento queda cerrado · Se alimentan las métricas semanales de la Fase 7</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="connector-body"><div class="connector-line"></div><div class="connector-chevron"></div></div></div>
+
+      <!-- FASE 7 -->
+      <div class="phase-card" style="--phase-color: #946200">
+        <div class="phase-card-top" style="background:#946200"></div>
+        <div class="phase-header" onclick="togglePhase(this)">
+          <div class="phase-header-left">
+            <div class="phase-num-badge" style="background:#946200"><span>F7</span></div>
+            <div class="phase-titles">
+              <div class="phase-name">Cierre y Métricas</div>
+              <div class="phase-role">QA Lead · Dashboard semanal · 5 KPIs gerenciales</div>
+            </div>
+          </div>
+          <div class="phase-tags">
+            <span class="tag tag-gray">5 KPIs</span>
+            <span class="tag tag-blue">Dashboard semanal</span>
+            <span class="tag tag-green">Reporte a gerencia</span>
+          </div>
+          <button class="toggle-btn">▼</button>
+        </div>
+        <div class="phase-body-wrap">
+          <div class="phase-body">
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#946200"></span>Actividades del QA Lead</div>
+              <ul class="item-list">
+                <li><span class="ic ic-blue">→</span> El workflow de <strong>dashboard semanal</strong> se ejecuta automáticamente al cierre del sprint</li>
+                <li><span class="ic ic-blue">→</span> Extrae datos de Jira (bugs, resolución) y GitHub (resultados del pipeline)</li>
+                <li><span class="ic ic-blue">→</span> Genera el reporte con los <strong>5 KPIs gerenciales</strong> y lo envía a gerencia por email</li>
+                <li><span class="ic ic-blue">→</span> El QA Lead revisa las métricas, identifica tendencias y define acciones para el siguiente sprint</li>
+                <li><span class="ic ic-blue">→</span> El ciclo <strong>se repite</strong> desde la Fase 1 para el siguiente requerimiento o sprint</li>
+              </ul>
+            </div>
+            <div class="body-col">
+              <div class="col-label"><span class="col-dot" style="background:#946200"></span>5 KPIs Gerenciales</div>
+              <div class="table-wrap">
+                <table class="mini-table">
+                  <thead><tr><th>KPI</th><th>Qué mide</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Pass/Fail Rate</strong></td><td>Porcentaje de TCs que pasan vs fallan en cada ejecución</td></tr>
+                    <tr><td><strong>Test Coverage</strong></td><td>% de requerimientos cubiertos por al menos un caso de prueba</td></tr>
+                    <tr><td><strong>Automation Coverage</strong></td><td>% de casos de prueba automatizados sobre el total definido</td></tr>
+                    <tr><td><strong>Escaped Defects</strong></td><td>Defectos que llegaron a PROD sin ser detectados en UAT</td></tr>
+                    <tr><td><strong>Defect Resolution</strong></td><td>Tiempo promedio de resolución de defectos vs SLA por severidad</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end pipeline -->
+  </div><!-- end tab-pipeline -->
+
+
+  <!-- ════ TAB: KPIs ════ -->
+  <div id="tab-kpis" class="tab-content">
+    <div class="section-header">
+      <div class="section-label">Métricas Gerenciales</div>
+      <div class="section-title">5 KPIs de Calidad</div>
+      <div class="section-desc">Indicadores clave que el QA Lead reporta a gerencia en cada cierre de sprint. Los porcentajes se actualizan semanalmente vía dashboard automatizado (WF de reporte semanal).</div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--kpi-color: #0066CC">
+        <div class="kpi-name">Pass / Fail Rate</div>
+        <div class="kpi-value">0%</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill" data-width="0" style="background:#0066CC"></div></div>
+        <div class="kpi-desc">Porcentaje de casos de prueba que pasan sobre el total ejecutado en cada corrida de Cypress. Se calcula automáticamente al finalizar cada ejecución.</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: #5243AA">
+        <div class="kpi-name">Test Coverage</div>
+        <div class="kpi-value">0%</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill" data-width="0" style="background:#5243AA"></div></div>
+        <div class="kpi-desc">% de requerimientos del sprint que tienen al menos un caso de prueba definido y ejecutado. Se calcula desde la matriz REQ vs TC en Xray.</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: #00875A">
+        <div class="kpi-name">Automation Coverage</div>
+        <div class="kpi-value">0%</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill" data-width="0" style="background:#00875A"></div></div>
+        <div class="kpi-desc">% de casos de prueba totales que están automatizados con Cypress. Fórmula: (TCs automatizados / total TCs definidos) × 100.</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: #BF2600">
+        <div class="kpi-name">Escaped Defects</div>
+        <div class="kpi-value">0%</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill" data-width="0" style="background:#BF2600"></div></div>
+        <div class="kpi-desc">Cantidad de defectos que llegaron a Producción sin ser detectados en UAT. Clasificados con <code>found-in: PROD</code> en Jira. El objetivo es mantenerlo en 0.</div>
+      </div>
+      <div class="kpi-card" style="--kpi-color: #946200">
+        <div class="kpi-name">Defect Resolution</div>
+        <div class="kpi-value">0%</div>
+        <div class="kpi-bar-track"><div class="kpi-bar-fill" data-width="0" style="background:#946200"></div></div>
+        <div class="kpi-desc">% de defectos resueltos dentro del SLA definido por severidad (Critical: 1d, High: 2d, Medium: 5d, Low: 10d). Se calcula desde la fecha de apertura vs cierre en Jira.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════ TAB: TOOLS ════ -->
+  <div id="tab-tools" class="tab-content">
+    <div class="section-header">
+      <div class="section-label">Stack Tecnológico</div>
+      <div class="section-title">Herramientas del Proceso QA</div>
+      <div class="section-desc">Conjunto de herramientas que sostienen el proceso de calidad. Cada una cumple un rol específico en el ciclo QA.</div>
+    </div>
+    <div class="tools-grid">
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:#EBF4FF">🌲</div>
+          <div>
+            <div class="tool-name">Cypress</div>
+            <div class="tool-type">Framework de Automatización E2E</div>
+          </div>
+        </div>
+        <div class="tool-desc">Ejecuta pruebas end-to-end en navegador real (Chrome, Firefox, Edge). Permite automatizar flujos completos de usuario, validar la UI, tomar screenshots y grabar videos de cada ejecución. Se integra nativamente con GitHub Actions en el pipeline.</div>
+        <div class="tool-uses">
+          <span class="tool-use-chip">Smoke Tests</span>
+          <span class="tool-use-chip">Flujos Críticos</span>
+          <span class="tool-use-chip">Mobile Testing</span>
+          <span class="tool-use-chip">Screenshots / Videos</span>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:#EAE6FF">🔌</div>
+          <div>
+            <div class="tool-name">cypress-axe</div>
+            <div class="tool-type">Plugin de Accesibilidad WCAG</div>
+          </div>
+        </div>
+        <div class="tool-desc">Integración de axe-core dentro de Cypress. Valida automáticamente el cumplimiento de estándares WCAG 2.1 niveles A y AA: contraste de colores, atributos ARIA, orden de foco, etiquetas accesibles y más.</div>
+        <div class="tool-uses">
+          <span class="tool-use-chip">WCAG 2.1 A/AA</span>
+          <span class="tool-use-chip">Contraste</span>
+          <span class="tool-use-chip">ARIA</span>
+          <span class="tool-use-chip">Accesibilidad</span>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:#E6F5EF">⚡</div>
+          <div>
+            <div class="tool-name">n8n</div>
+            <div class="tool-type">Plataforma de Automatización de Workflows</div>
+          </div>
+        </div>
+        <div class="tool-desc">Motor de automatización que conecta todas las herramientas del proceso QA. Ejecuta workflows al recibir eventos (webhooks), genera reportes HTML, envía notificaciones y consolida métricas de múltiples fuentes sin intervención manual.</div>
+        <div class="tool-uses">
+          <span class="tool-use-chip">Reportes automáticos</span>
+          <span class="tool-use-chip">Notificaciones</span>
+          <span class="tool-use-chip">Integración de APIs</span>
+          <span class="tool-use-chip">Dashboards</span>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:#F0F0F0">⚙️</div>
+          <div>
+            <div class="tool-name">GitHub Actions</div>
+            <div class="tool-type">Motor CI/CD</div>
+          </div>
+        </div>
+        <div class="tool-desc">Ejecuta el pipeline QA automáticamente ante cada push o PR. Orquesta los stages de instalación, linting, pruebas E2E y notificaciones. Genera el Step Summary con el resultado de cada ejecución y almacena artefactos (screenshots, videos).</div>
+        <div class="tool-uses">
+          <span class="tool-use-chip">Pipeline CI/CD</span>
+          <span class="tool-use-chip">Artefactos</span>
+          <span class="tool-use-chip">Step Summary</span>
+          <span class="tool-use-chip">Secrets</span>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:#DEEBFF">📋</div>
+          <div>
+            <div class="tool-name">Jira</div>
+            <div class="tool-type">Gestión de Requerimientos y Defectos</div>
+          </div>
+        </div>
+        <div class="tool-desc">Centraliza la gestión de requerimientos (Epics, Stories) y el tracking de defectos. El board QA implementa el flujo de estados completo desde BACKLOG hasta DONE. Los workflows de n8n interactúan con la API de Jira para abrir bugs, extraer métricas y enviar reportes.</div>
+        <div class="tool-uses">
+          <span class="tool-use-chip">Epics / Stories</span>
+          <span class="tool-use-chip">Bug tracking</span>
+          <span class="tool-use-chip">Board Kanban</span>
+          <span class="tool-use-chip">Métricas</span>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:#EAE6FF">🧪</div>
+          <div>
+            <div class="tool-name">Xray</div>
+            <div class="tool-type">Gestión de Pruebas (plugin Jira)</div>
+          </div>
+        </div>
+        <div class="tool-desc">Plugin de Jira que provee trazabilidad completa entre requerimientos y casos de prueba. Permite crear TestPlan y TestExecution, registrar resultados de ejecuciones manuales y calcular la cobertura de pruebas por requerimiento.</div>
+        <div class="tool-uses">
+          <span class="tool-use-chip">TestPlan</span>
+          <span class="tool-use-chip">TestExecution</span>
+          <span class="tool-use-chip">Trazabilidad REQ→TC</span>
+          <span class="tool-use-chip">Coverage</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ════ TAB: WORKFLOWS ════ -->
+  <div id="tab-workflows" class="tab-content">
+    <div class="section-header">
+      <div class="section-label">Automatización n8n</div>
+      <div class="section-title">Workflows de Soporte QA</div>
+      <div class="section-desc">Conjunto de workflows automatizados que operan en paralelo al proceso QA. Eliminan tareas manuales repetitivas, garantizan notificaciones en tiempo real y generan reportes sin intervención del QA Lead.</div>
+    </div>
+    <div class="wf-grid">
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Reporte de Regresión Post-Ejecución</div>
+          <span class="wf-num">Fase 4 / 5</span>
+        </div>
+        <div class="wf-desc">Se activa al finalizar cada ejecución de Cypress. Genera un reporte HTML con los resultados (PASS/FAIL por TC) y lo envía por email al QA Lead. Diferencia entre ejecuciones de smoke, flujos críticos y mobile.</div>
+        <div class="wf-freq">Post-ejecución Cypress</div>
+        <div class="wf-phase">Herramientas: Cypress · email-server · Gmail</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Resumen Diario de Bugs Abiertos</div>
+          <span class="wf-num">Fase 5 / 6</span>
+        </div>
+        <div class="wf-desc">Extrae todos los defectos abiertos de Jira cada mañana, los consolida en una planilla Excel y envía el resumen por email. Permite al QA Lead comenzar el día con visibilidad total del estado de defectos.</div>
+        <div class="wf-freq">Diario · 9:00 AM</div>
+        <div class="wf-phase">Herramientas: Jira API · Excel · Gmail</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Monitoreo de Nuevos Tickets Jira</div>
+          <span class="wf-num">Fase 5</span>
+        </div>
+        <div class="wf-desc">Detecta nuevos tickets creados en el board de Jira y notifica al equipo en tiempo real. Garantiza que ningún defecto abierto pase desapercibido durante el día.</div>
+        <div class="wf-freq">Cada 2 minutos</div>
+        <div class="wf-phase">Herramientas: Jira API · Excel · Gmail</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Estado Diario QA</div>
+          <span class="wf-num">Fase 5 / 7</span>
+        </div>
+        <div class="wf-desc">Genera y envía un resumen del estado del día al cierre de jornada: bugs abiertos, TCs ejecutados, incidencias y avance del sprint. Mantiene informado al equipo sin reuniones adicionales.</div>
+        <div class="wf-freq">Diario · 6:00 PM</div>
+        <div class="wf-phase">Herramientas: Jira API · Gmail</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Health Check de Ambientes</div>
+          <span class="wf-num">Fase 5 / 6</span>
+        </div>
+        <div class="wf-desc">Verifica la disponibilidad de los ambientes QA (staging y producción) de forma continua. Si detecta un ambiente caído, alerta al QA Lead y al equipo de DevOps de inmediato.</div>
+        <div class="wf-freq">Cada hora</div>
+        <div class="wf-phase">Herramientas: HTTP check · Gmail · Mensajería</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Generación de SDD PDF</div>
+          <span class="wf-num">Fase 1</span>
+        </div>
+        <div class="wf-desc">Al crear o actualizar un ticket de Jira con el SDD documentado, genera automáticamente el PDF del documento y lo envía al equipo por email y mensajería. Mantiene la documentación siempre actualizada y accesible.</div>
+        <div class="wf-freq">Al crear/actualizar ticket Jira</div>
+        <div class="wf-phase">Herramientas: Jira API · PDF generator · Gmail · WhatsApp</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Alerta de Fallos Críticos</div>
+          <span class="wf-num">Fase 4 / 5</span>
+        </div>
+        <div class="wf-desc">Detecta fallos en los flujos críticos de Cypress y actúa de inmediato: abre un defecto en Jira con prioridad máxima (Highest), notifica al QA Lead y al equipo de desarrollo por email y mensajería.</div>
+        <div class="wf-freq">En tiempo real · Post-pipeline</div>
+        <div class="wf-phase">Herramientas: Cypress · Jira API · Gmail · Mensajería</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Resultado del Pipeline CI/CD</div>
+          <span class="wf-num">Fase 4</span>
+        </div>
+        <div class="wf-desc">Recibe el resultado de cada ejecución del pipeline de GitHub Actions vía webhook. Notifica al QA Lead con el estado (success/failure), rama, commit y enlace al run para trazabilidad completa.</div>
+        <div class="wf-freq">Post-pipeline · Webhook</div>
+        <div class="wf-phase">Herramientas: GitHub Actions · n8n webhook · Gmail · Mensajería · Jira</div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-title">Dashboard Semanal QA</div>
+          <span class="wf-num">Fase 7</span>
+        </div>
+        <div class="wf-desc">Al cierre del sprint genera automáticamente el reporte semanal con los 5 KPIs gerenciales: extrae datos de Jira y GitHub, calcula los indicadores y envía el informe ejecutivo a gerencia por email.</div>
+        <div class="wf-freq">Semanal · Cierre de sprint</div>
+        <div class="wf-phase">Herramientas: Jira API · GitHub API · Gmail</div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-text">BUPA Chile · QA Playbook v1.0 · Mayo 2026 · QA Lead: Jaime Quiñelen Villar</div>
+    <div class="footer-stack">
+      <span class="stack-chip">Cypress 15</span>
+      <span class="stack-chip">n8n</span>
+      <span class="stack-chip">GitHub Actions</span>
+      <span class="stack-chip">Angular 17</span>
+      <span class="stack-chip">Xray</span>
+      <span class="stack-chip">Jira</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const tabLabels = {
+    'pipeline': 'Proceso QA — 7 Fases',
+    'kpis':     'KPIs Gerenciales',
+    'tools':    'Herramientas',
+    'workflows':'Workflows de Automatización'
+  };
+
+  function switchTab(name, el) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('bc-current').textContent = tabLabels[name];
+    if (name === 'kpis') animateKPIs();
+  }
+
+  function togglePhase(header) {
+    const btn  = header.querySelector('.toggle-btn');
+    const wrap = header.nextElementSibling;
+    const open = wrap.style.maxHeight && wrap.style.maxHeight !== '0px';
+    if (open) {
+      wrap.style.maxHeight = '0px';
+      btn.textContent = '▶';
+    } else {
+      wrap.style.maxHeight = wrap.scrollHeight + 200 + 'px';
+      btn.textContent = '▼';
+    }
+  }
+
+  function animateKPIs() {
+    document.querySelectorAll('.kpi-bar-fill').forEach(bar => {
+      const w = bar.getAttribute('data-width');
+      bar.style.width = '0';
+      setTimeout(() => { bar.style.width = w + '%'; }, 120);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.phase-body-wrap').forEach(wrap => {
+      wrap.style.maxHeight = wrap.scrollHeight + 200 + 'px';
+    });
+    animateKPIs();
+  });
+</script>
+</body>
+</html>

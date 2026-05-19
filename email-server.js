@@ -121,10 +121,11 @@ app.post("/run-cypress-report", async (req, res) => {
 // POST /send-email
 // Body: { to, subject, body }
 app.post("/send-email", async (req, res) => {
-  const { to, subject, body } = req.body;
+  const { to, subject, body, html } = req.body;
+  const contenido = body || html;
 
-  if (!to || !subject || !body) {
-    return res.status(400).json({ error: "Faltan campos: to, subject, body" });
+  if (!to || !subject || !contenido) {
+    return res.status(400).json({ error: "Faltan campos: to, subject, body (o html)" });
   }
 
   try {
@@ -132,7 +133,7 @@ app.post("/send-email", async (req, res) => {
       from: `QA-BUPA <${process.env.GMAIL_USER}>`,
       to,
       subject,
-      html: body,
+      html: contenido,
     });
 
     console.log(`[OK] Correo enviado a ${to}`);

@@ -9,6 +9,18 @@
 
 ---
 
+## Recursos Visuales
+
+| Documento | Descripcion | Ruta |
+|-----------|-------------|------|
+| **QA Playbook** | Version visual del proceso completo — 7 fases genericas, KPIs, herramientas y workflows. Para presentar a gerencia o hacer onboarding. | `docs/qa-playbook.html` |
+| **Sprint 1 Status** | Estado real del Sprint 1 — brechas, TCs actuales, metricas con porcentaje de implementacion. | `docs/qa-sprint1-status.html` |
+| **QA Phases** | Detalle completo de las 7 fases en texto — actividades, artefactos, criterios y workflows por fase. | `.claude/references/QA-Phases.md` |
+
+> Para cada sprint nuevo, generar `docs/qa-sprintN-status.html` y mantener el historial.
+
+---
+
 ## 1. Definition of Ready (DoR)
 
 > **Cuándo usarlo:** antes de que un REQ entre al sprint. Si no cumple estos criterios, NO entra al sprint.

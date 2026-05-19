@@ -35,5 +35,9 @@ build/
 # Scripts con credenciales hardcodeadas
 scripts/
 
+# n8n workflows — contienen tokens y credenciales hardcodeadas
+# El backup oficial vive en github.com/jaime1992/n8n_backup
+workflows/
+
 # Claude local settings (personal, no compartir)
 .claude/settings.local.json
