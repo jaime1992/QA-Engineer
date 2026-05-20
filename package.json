@@ -6,6 +6,7 @@
   "scripts": {
     "test": "npx cypress run",
     "test:smoke": "npx cypress run --spec 'cypress/e2e/REQ-001-carga-portal.cy.js'",
+    "test:all-specs": "npx cypress run --spec 'cypress/e2e/REQ-001-carga-portal.cy.js,cypress/e2e/REQ-002-login-visibilidad.cy.js'",
     "test:uat": "npx cypress run --env environment=uat",
     "test:prod": "npx cypress run --env environment=prod",
     "cy:open": "npx cypress open",
