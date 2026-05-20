@@ -573,7 +573,76 @@ cy.request({
 
 ---
 
-## 21. Comandos de terminal
+## 21. Reportes con Allure
+
+Allure genera un dashboard HTML visual con historial, gráficos y detalle de cada TC.
+
+### Flujo
+
+```
+Cypress corre tests
+      ↓
+allure-results/   ← JSONs crudos generados automáticamente (uno por test)
+      ↓
+allure generate
+      ↓
+allure-report/    ← HTML visual que abres en el browser
+```
+
+### Configuración (ya aplicada en este proyecto)
+
+**`cypress/support/e2e.js`:**
+```javascript
+import '@shelex/cypress-allure-plugin'
+```
+
+**`cypress.config.js` — dentro de `setupNodeEvents`:**
+```javascript
+require("@shelex/cypress-allure-plugin/writer")(on, config);
+```
+
+### Comandos npm (definidos en package.json)
+
+```bash
+# Todo en un paso: corre todos los specs → genera reporte → abre en browser
+npm run allure:run
+
+# Paso a paso
+npm run test:allure     # corre todos los specs con allure=true
+npm run allure:report   # genera HTML en allure-report/
+npm run allure:open     # abre en el browser
+```
+
+### Comandos directos
+
+```bash
+# Correr specs y generar resultados
+npx cypress run --env allure=true
+
+# Correr solo un spec con Allure
+npx cypress run --spec "cypress/e2e/REQ-001-carga-portal.cy.js" --env allure=true
+
+# Generar reporte HTML
+npx allure generate allure-results --clean -o allure-report
+
+# Abrir reporte
+npx allure open allure-report
+
+# Generar y abrir en un solo comando
+npx allure serve allure-results
+```
+
+### .gitignore
+
+Ambas carpetas son artefactos generados — no se commitean:
+```
+allure-results/
+allure-report/
+```
+
+---
+
+## 22. Comandos de terminal
 
 ```bash
 # Correr un spec especifico

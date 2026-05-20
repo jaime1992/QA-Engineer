@@ -12,6 +12,8 @@ const environments = {
   },
 };
 
+const allureWriter = require('@shelex/cypress-allure-plugin/writer');
+
 module.exports = defineConfig({
   e2e: {
     // Ambiente por defecto: prod
