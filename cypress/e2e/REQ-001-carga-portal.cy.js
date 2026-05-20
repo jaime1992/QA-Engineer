@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 // REQ-BUPA-001 — Verificacion de carga del Portal Pacientes BUPA
-// Spec: bupa-smoke_test.cy.js
+// Spec: REQ-001-carga-portal.cy.js
 // Criterios automatizados: TC-001-AUTO, TC-002-AUTO, TC-003-AUTO
 // URL bajo prueba: https://portalpaciente.bupa.cl/inicio
 

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 // REQ-BUPA-002 — Verificacion de visibilidad y accesibilidad del formulario de login
-// Spec: Bupa-login.cy.js
+// Spec: REQ-002-login-visibilidad.cy.js
 // Criterios automatizados: TC-001-AUTO, TC-002-AUTO, TC-003-AUTO, TC-004-AUTO
 // TC-005-AUTO (Tab navigation) — pendiente implementacion
 // URL bajo prueba: https://portalpaciente.bupa.cl/inicio
