@@ -63,15 +63,33 @@ Automatizado = SOLO flujos principales (FP) ejecutados en UAT y PROD
 
 ---
 
+## Nomenclatura de TCs
+
+| Sufijo | Contexto | Herramienta | Ejemplo |
+|--------|----------|-------------|---------|
+| `-FP` | Flujo Principal — test manual | Xray | `TC-001-FP` |
+| `-EC` | Edge Case — test manual | Xray | `TC-001-EC` |
+| `-AUTO` | Criterio de aceptacion — test automatizado | Cypress | `TC-001-AUTO` |
+
+**Regla:** Un criterio de aceptacion del SDD puede tener un TC manual (`-FP`) Y un TC automatizado (`-AUTO`) con el mismo numero. Son el mismo criterio, distinto tipo de ejecucion.
+
+```
+SDD Criterio A → TC-001-FP   (manual en Xray)
+              → TC-001-AUTO  (automatizado en Cypress)
+```
+
+---
+
 ## Conexion entre artefactos
 
 ```
 SDD (criterios 1..N)
-  └── Criterio A → TC-001-FP → it() en Cypress    ← automatizado
-  └── Criterio B → TC-002-FP → it() en Cypress    ← automatizado
-  └── Criterio C → TC-003-FP → it() en Cypress    ← automatizado
-  └── Edge Case  → TC-001-EC → paso a paso manual  ← solo manual
-  └── Edge Case  → TC-002-EC → paso a paso manual  ← solo manual
+  └── Criterio A → TC-001-FP   → paso a paso manual en Xray   ← manual
+               → TC-001-AUTO  → it() en Cypress               ← automatizado
+  └── Criterio B → TC-002-FP   → paso a paso manual en Xray   ← manual
+               → TC-002-AUTO  → it() en Cypress               ← automatizado
+  └── Edge Case  → TC-001-EC   → paso a paso manual en Xray   ← solo manual
+  └── Edge Case  → TC-002-EC   → paso a paso manual en Xray   ← solo manual
 ```
 
 ---

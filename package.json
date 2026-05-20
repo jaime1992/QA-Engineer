@@ -10,13 +10,19 @@
     "test:prod": "npx cypress run --env environment=prod",
     "cy:open": "npx cypress open",
     "email:start": "node email-server.js",
-    "lint": "echo 'lint ok'"
+    "lint": "echo 'lint ok'",
+    "test:allure": "npx cypress run --spec 'cypress/e2e/Bupa-smoke_test.cy.js' --env allure=true",
+    "allure:report": "npx allure generate allure-results --clean -o allure-report",
+    "allure:open": "npx allure open allure-report",
+    "allure:run": "npm run test:allure && npm run allure:report && npm run allure:open"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@shelex/cypress-allure-plugin": "^2.41.2",
+    "allure-commandline": "^2.41.0",
     "axe-core": "^4.11.4",
     "cypress": "^15.15.0",
     "cypress-axe": "^1.7.0"

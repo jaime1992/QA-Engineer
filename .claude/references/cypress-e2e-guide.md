@@ -236,8 +236,22 @@ it('TC-002-FP | Muestra nombre del usuario', function () {
 
 Definidos en `cypress/support/commands.js`. Patron: `cy.accionNombre()`
 
+**Regla:** Si un bloque de codigo se repite en 2 o mas specs, va a `commands.js` como comando reutilizable. Nunca copiar y pegar entre specs.
+
 ```javascript
-// Definicion en commands.js
+// Ejemplo BUPA — visita siempre la misma URL base
+Cypress.Commands.add('visitPortal', () => {
+  cy.visit('https://portalpaciente.bupa.cl/inicio')
+})
+
+// Uso en cualquier spec — si la URL cambia, solo se toca commands.js
+beforeEach(() => {
+  cy.visitPortal()
+})
+```
+
+```javascript
+// Ejemplo generico — login reutilizable
 Cypress.Commands.add('login', (email, password) => {
   cy.get('input[name="email"]').type(email)
   cy.get('input[name="password"]').type(password, { log: false })
@@ -253,7 +267,7 @@ Cypress.Commands.add('loginPorApi', (email, password) => {
 })
 
 // Uso en el spec
-it('TC-001-FP | Usuario accede al dashboard', () => {
+it('TC-001-AUTO | Usuario accede al dashboard', () => {
   cy.login('usuario@test.com', 'Password123')
   cy.url().should('include', '/dashboard')
 })
@@ -549,6 +563,7 @@ cy.request({
 | Comentarios | DADO/CUANDO/ENTONCES | comentarios obvios |
 | Datos de prueba | `cy.fixture('datos.json')` | datos hardcodeados en el spec |
 | Login repetido | `cy.loginPorApi()` en beforeEach | `cy.visit + type + click` en cada it() |
+| Codigo repetido entre specs | `cy.visitPortal()` en `commands.js` | copiar `cy.visit(url)` en cada spec |
 
 **Nunca:**
 - `cy.wait(numero)` con tiempo fijo — usar `cy.wait('@alias')` o `.should()`

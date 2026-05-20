@@ -32,6 +32,10 @@ Thumbs.db
 dist/
 build/
 
+# Allure
+allure-results/
+allure-report/
+
 # Scripts con credenciales hardcodeadas
 scripts/
 

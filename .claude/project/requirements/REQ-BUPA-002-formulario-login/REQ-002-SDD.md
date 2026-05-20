@@ -4,7 +4,7 @@
 | Campo | Detalle |
 |-------|---------|
 | **Autor** | Jaime Quiñelen Villar — QA Lead |
-| **Spec file** | `bupa-smoke.cy.js` |
+| **Spec file** | `Bupa-login.cy.js` |
 | **URL bajo prueba** | `https://portalpaciente.bupa.cl/inicio` |
 | **Stack** | Angular 17 + Angular Material + cypress-axe |
 | **Selector RUT** | `input[name="rut"]` |
@@ -157,12 +157,12 @@ ENTONCES el foco se desplaza en orden logico: RUT -> contrasena -> boton submit
 
 ---
 
-## Conexion con Cypress — `bupa-smoke.cy.js`
+## Conexion con Cypress — `Bupa-login.cy.js`
 
-| Criterio | Test | Comando Cypress |
-|----------|------|-----------------|
-| A | `it("REQ-002: formulario de login es visible al cargar")` | `cy.get('input[name="rut"]').should("be.visible")` |
-| B | `it("REQ-002: formulario de login es visible al cargar")` | `cy.get('input[name="current-password"]').should("be.visible")` |
-| C | `it("REQ-002: formulario de login es visible al cargar")` | `cy.get('button[type="submit"]').should("be.visible")` |
-| D | `it("REQ-002: formulario de login es visible al cargar")` | `cy.injectAxe()` + `cy.checkA11y(null, { runOnly: ["wcag2a","wcag2aa"] })` |
-| E | _(pendiente implementacion)_ | Tab navigation focus order |
+| Criterio | TC | Comando Cypress | Estado |
+|----------|----|-----------------|--------|
+| A | `TC-001-AUTO` — Campo RUT es visible | `cy.get('input[name="rut"]').should("be.visible")` | ✅ Implementado |
+| B | `TC-002-AUTO` — Campo password es visible y tipo password | `cy.get('input[name="current-password"]').should("be.visible").and("have.attr","type","password")` | ✅ Implementado |
+| C | `TC-003-AUTO` — Boton Iniciar sesion es visible | `cy.get('button[type="submit"]').should("be.visible")` | ✅ Implementado |
+| D | `TC-004-AUTO` — Pagina cumple WCAG 2.1 AA | `cy.injectAxe()` + `cy.checkA11y(null, { runOnly: { type:"tag", values:["wcag2a","wcag2aa"] } })` | ✅ Implementado |
+| E | `TC-005-AUTO` — Tab navega en orden logico | `cy.realPress("Tab")` + `cy.focused()` | ⏳ Pendiente — `it.skip` |

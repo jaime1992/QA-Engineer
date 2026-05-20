@@ -32,6 +32,8 @@ module.exports = defineConfig({
     },
 
     setupNodeEvents(on, config) {
+      require("@shelex/cypress-allure-plugin/writer")(on, config);
+
       const env = config.env.environment || "prod";
       config.baseUrl = environments[env]?.baseUrl || environments.prod.baseUrl;
 
