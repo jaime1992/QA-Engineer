@@ -43,7 +43,13 @@ Cypress after:run → POST localhost:3025/run-cypress-report → email-server.js
 - Asunto: `🧪 [WF-1.1] Cypress #Test Regresion# {spec} {PASS/FAIL} — {N}✅ {N}❌ | {fecha}`
 - Header verde (PASS) o rojo (FAIL)
 - Boxes: PASADOS / FALLADOS / PENDIENTES / DURACION
-- Tabla caso a caso: titulo, estado, duracion, error
+- Tabla caso a caso: **Requerimiento** | **Test Case** | Estado | Duracion | Error
+
+**Estructura del campo `t.title` en email-server.js:**
+```
+REQ-BUPA-001 | Descripcion del requerimiento > TC-001-AUTO | Nombre del caso
+```
+Separador: ` > ` — todo lo que está antes va a "Requerimiento" (solo el REQ-XXX), todo lo que está después va a "Test Case" (ID + nombre). Si no hay ` > `, el título completo va a "Test Case".
 
 **Estado:** ✅ Activo — funciona correctamente via email-server.js
 

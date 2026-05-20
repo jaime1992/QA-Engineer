@@ -70,9 +70,13 @@ app.post("/run-cypress-report", async (req, res) => {
       const errTd      = t.err
         ? `<td style="padding:9px 12px;border-bottom:1px solid ${BUPA_BORDER};color:${BUPA_RED};font-size:11px;background:${rowBg};font-family:monospace">${t.err}</td>`
         : `<td style="padding:9px 12px;border-bottom:1px solid ${BUPA_BORDER};color:${BUPA_TEXT3};font-size:12px;text-align:center;background:${rowBg}">—</td>`;
+      const titleParts  = t.title.split(' > ');
+      const reqId       = (titleParts[0] || '').split(' | ')[0].trim();
+      const testCase    = (titleParts[1] || t.title).trim();
       testRows += `<tr>
         <td style="padding:9px 8px;border-bottom:1px solid ${BUPA_BORDER};text-align:center;background:${rowBg};font-size:14px">${icon}</td>
-        <td style="padding:9px 12px;border-bottom:1px solid ${BUPA_BORDER};font-size:13px;color:${BUPA_TEXT};background:${rowBg};font-weight:500">${t.title}</td>
+        <td style="padding:9px 12px;border-bottom:1px solid ${BUPA_BORDER};font-size:12px;color:${BUPA_BLUE};background:${rowBg};font-weight:700;white-space:nowrap">${reqId}</td>
+        <td style="padding:9px 12px;border-bottom:1px solid ${BUPA_BORDER};font-size:13px;color:${BUPA_TEXT};background:${rowBg};font-weight:500">${testCase}</td>
         <td style="padding:9px 8px;border-bottom:1px solid ${BUPA_BORDER};text-align:center;background:${stateBg}">
           <span style="font-size:11px;font-weight:700;color:${stateColor};letter-spacing:0.5px">${stateText}</span>
         </td>
@@ -152,10 +156,11 @@ app.post("/run-cypress-report", async (req, res) => {
         <thead>
           <tr style="background:${BUPA_BG}">
             <th style="padding:10px 8px;width:36px;border-bottom:2px solid ${BUPA_BORDER}"></th>
-            <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:${BUPA_TEXT2};border-bottom:2px solid ${BUPA_BORDER}">Test / Spec</th>
+            <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:${BUPA_TEXT2};border-bottom:2px solid ${BUPA_BORDER};white-space:nowrap;width:120px">Requerimiento</th>
+            <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:${BUPA_TEXT2};border-bottom:2px solid ${BUPA_BORDER}">Test Case</th>
             <th style="padding:10px 8px;text-align:center;font-size:12px;font-weight:700;color:${BUPA_TEXT2};border-bottom:2px solid ${BUPA_BORDER};width:90px">Estado</th>
             <th style="padding:10px 8px;text-align:center;font-size:12px;font-weight:700;color:${BUPA_TEXT2};border-bottom:2px solid ${BUPA_BORDER};width:90px">Duracion</th>
-            <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:${BUPA_TEXT2};border-bottom:2px solid ${BUPA_BORDER};width:160px">Error</th>
+            <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:700;color:${BUPA_TEXT2};border-bottom:2px solid ${BUPA_BORDER};width:160px">Error</th>
           </tr>
         </thead>
         <tbody>${testRows}</tbody>
