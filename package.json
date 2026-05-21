@@ -15,13 +15,17 @@
     "test:allure": "npx cypress run --env allure=true",
     "allure:report": "npx allure generate allure-results --clean -o allure-report",
     "allure:open": "npx allure open allure-report",
-    "allure:run": "npm run test:allure && npm run allure:report && npm run allure:open"
+    "allure:run": "npm run test:allure && npm run allure:report && npm run allure:open",
+    "pw:run": "npx playwright test",
+    "pw:smoke": "npx playwright test playwright/e2e/REQ-001-carga-portal.spec.ts",
+    "pw:open": "npx playwright test --ui"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@shelex/cypress-allure-plugin": "^2.41.2",
     "allure-commandline": "^2.41.0",
     "axe-core": "^4.11.4",
