@@ -97,19 +97,41 @@ Schedule 2min → Jira Tasks nuevas (HTTP) → ¿Hay nuevas? (IF)
 
 ## WF-1.4 — Estatus Diarios QA (6pm)
 
-**Que hace:** Cada dia a las 6pm consulta Jira (tasks + bugs + stories) y envia un resumen HTML del estado del dia.
+**Que hace:** Cada dia a las 6pm consulta Jira y envia un resumen HTML con los tickets activos del dia (solo Story, Bug y Task — excluye Epic y Test Plans).
 
 **Trigger:** Cron diario 6:00pm
-**Salida:** Email HTML con resumen: tasks activas, bugs abiertos, stories en progreso
+**Salida:** Email HTML con recuadros de resumen por estado + tabla de tickets activos (sin Done)
 
 **Nodos:**
 ```
-Schedule 6pm → Jira: Tasks + Bugs + Stories (HTTP) → Procesar + HTML (Code) → Gmail (HTTP)
+Schedule 6pm → Jira: Issues (HTTP) → Procesar + Construir HTML (Code) → Gmail (HTTP)
 ```
 
 **Valor para QA:** Cierre de dia automatico — jefe/equipo recibe estado sin que QA tenga que escribir nada.
 
 **Estado:** ✅ Activo
+
+### Nodo: Procesar + Construir HTML — decisiones tecnicas
+
+| Decision | Detalle |
+|---|---|
+| Filtro de tipo | Solo `Story`, `Bug`, `Task` — Epic y Test Plans excluidos en linea 2 |
+| Layout resumen | `<table><tr><td>` — NO usar `display:flex` (Gmail no lo soporta, DONE se sale del contenedor) |
+| Template literals | NO usar backticks para el HTML — usar concatenacion `+` para evitar corrupcion al copiar en n8n |
+| Arrow functions | NO usar `=>` en `.map/.filter` dentro de n8n Code node — usar `function()` para mayor compatibilidad |
+
+**Codigo de referencia (version activa 2026-05-20):**
+
+```javascript
+const data = $input.first().json;
+const allIssues = Array.isArray(data.issues) ? data.issues : [];
+const issues = allIssues.filter(function(i) {
+  const t = i && i.fields && i.fields.issuetype && i.fields.issuetype.name;
+  return t === 'Story' || t === 'Bug' || t === 'Task';
+});
+// ... resto del codigo en workflows/wf-1.4---estatus-diarios-qa--6pm--pLF7L3sVgEg5egWl.json
+// Nodo: "Procesar + Construir HTML" > parametro jsCode
+```
 
 ---
 
