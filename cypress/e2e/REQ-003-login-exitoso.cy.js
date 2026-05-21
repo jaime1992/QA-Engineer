@@ -4,7 +4,7 @@
 // Spec: REQ-003-login-exitoso.cy.js
 // Criterios automatizados: TC-001-AUTO (A), TC-002-AUTO (B), TC-003-AUTO (C)
 // URL bajo prueba: https://portalpaciente.bupa.cl/inicio
-// Precondicion: BUPA_USER y BUPA_PASS definidos en cypress.env.json
+// Precondicion: cypress/fixtures/auth/credenciales-validas.json existe (gitignored)
 
 describe('REQ-BUPA-003 | Login exitoso con credenciales validas', () => {
 
@@ -18,9 +18,11 @@ describe('REQ-BUPA-003 | Login exitoso con credenciales validas', () => {
   // CUANDO  ingresa RUT valido en input[name="rut"] y hace click en continuar
   // ENTONCES el campo input[name="current-password"] aparece visible en pantalla
   it('TC-001-AUTO | REQ-003 | Campo password aparece visible tras paso 1', () => {
-    cy.get('input[name="rut"]').type(Cypress.env('BUPA_USER'))
-    cy.get('button[type="submit"]').first().click()
-    cy.get('input[name="current-password"]', { timeout: 10000 }).should('be.visible')
+    cy.fixture('auth/credenciales-validas').then((creds) => {
+      cy.get('input[name="rut"]').type(creds.rut)
+      cy.get('button[type="submit"]').first().click()
+      cy.get('input[name="current-password"]', { timeout: 10000 }).should('be.visible')
+    })
   })
 
   // TC-002-AUTO — Criterio B

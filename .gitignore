@@ -16,6 +16,9 @@ coverage/
 .env.*.local
 cypress.env.json
 
+# Fixtures con credenciales reales — nunca commitear
+cypress/fixtures/auth/credenciales-validas.json
+
 # Logs
 *.log
 npm-debug.log*

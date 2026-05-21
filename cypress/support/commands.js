@@ -28,13 +28,15 @@ Cypress.Commands.add('visitPortal', () => {
   cy.visit('https://portalpaciente.bupa.cl/inicio')
 })
 
-// Flujo de login de dos pasos con credenciales validas desde cypress.env.json
+// Flujo de login de dos pasos con credenciales validas desde fixture
 // Uso: cy.loginBupa()
-// Requiere BUPA_USER y BUPA_PASS en cypress.env.json (nunca hardcodeados)
+// Credenciales en cypress/fixtures/auth/credenciales-validas.json (gitignored)
 Cypress.Commands.add('loginBupa', () => {
-  cy.get('input[name="rut"]').type(Cypress.env('BUPA_USER'))
-  cy.get('button[type="submit"]').first().click()
-  cy.get('input[name="current-password"]', { timeout: 10000 }).should('be.visible')
-  cy.get('input[name="current-password"]').type(Cypress.env('BUPA_PASS'), { log: false })
-  cy.get('button[type="submit"]').last().click()
+  cy.fixture('auth/credenciales-validas').then((creds) => {
+    cy.get('input[name="rut"]').type(creds.rut)
+    cy.get('button[type="submit"]').first().click()
+    cy.get('input[name="current-password"]', { timeout: 10000 }).should('be.visible')
+    cy.get('input[name="current-password"]').type(creds.password, { log: false })
+    cy.get('button[type="submit"]').last().click()
+  })
 })

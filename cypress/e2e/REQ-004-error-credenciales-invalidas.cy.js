@@ -4,19 +4,19 @@
 // Spec: REQ-004-error-credenciales-invalidas.cy.js
 // Criterios automatizados: TC-001-AUTO (A), TC-002-AUTO (B), TC-003-AUTO (C), TC-004-AUTO (D)
 // URL bajo prueba: https://portalpaciente.bupa.cl/inicio
-// RUT de prueba: 12345678K (formato valido, no registrado)
-// Password de prueba: ClaveIncorrecta999
+// Datos de borde en: cypress/fixtures/auth/credenciales-invalidas.json
 
 describe('REQ-BUPA-004 | Mensaje de error con credenciales invalidas', () => {
 
   beforeEach(() => {
     cy.visitPortal()
-    // Flujo de dos pasos con credenciales invalidas
-    cy.get('input[name="rut"]').type('12345678K')
-    cy.get('button[type="submit"]').first().click()
-    cy.get('input[name="current-password"]', { timeout: 10000 }).should('be.visible')
-    cy.get('input[name="current-password"]').type('ClaveIncorrecta999', { log: false })
-    cy.get('button[type="submit"]').last().click()
+    cy.fixture('auth/credenciales-invalidas').then((creds) => {
+      cy.get('input[name="rut"]').type(creds.rut)
+      cy.get('button[type="submit"]').first().click()
+      cy.get('input[name="current-password"]', { timeout: 10000 }).should('be.visible')
+      cy.get('input[name="current-password"]').type(creds.password, { log: false })
+      cy.get('button[type="submit"]').last().click()
+    })
   })
 
   // TC-001-AUTO — Criterio A
