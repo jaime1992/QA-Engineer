@@ -18,7 +18,15 @@
     "allure:run": "npm run test:allure && npm run allure:report && npm run allure:open",
     "pw:run": "npx playwright test",
     "pw:smoke": "npx playwright test playwright/e2e/REQ-001-carga-portal.spec.ts",
-    "pw:open": "npx playwright test --ui"
+    "pw:open": "npx playwright test --ui",
+    "pw:mobile": "npx playwright test --project=mobile-chrome",
+    "pw:mobile-safari": "npx playwright test --project=mobile-safari",
+    "pw:tablet": "npx playwright test --project=tablet",
+    "pw:bs-iphone": "npx playwright test --project=bs-iphone-14",
+    "pw:bs-android": "npx playwright test --project=bs-pixel-7",
+    "api:jp": "npx newman run postman/colecciones/ejercicios-jsonplaceholder.json",
+    "api:bupa": "npx newman run postman/colecciones/REQ-001-BUPA-carga-portal.json",
+    "api:all": "npm run api:jp && npm run api:bupa"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +38,7 @@
     "@shelex/cypress-allure-plugin": "^2.41.2",
     "allure-commandline": "^2.41.0",
     "axe-core": "^4.11.4",
+    "browserstack-node-sdk": "^1.55.0",
     "cypress": "^15.15.0",
     "cypress-axe": "^1.7.0",
     "newman": "^6.2.2"

@@ -52,3 +52,7 @@ workflows/
 
 # Claude local settings (personal, no compartir)
 .claude/settings.local.json
+
+# BrowserStack — credenciales de acceso
+.env
+browserstack.yml
