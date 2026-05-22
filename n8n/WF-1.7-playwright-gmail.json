@@ -1,0 +1,71 @@
+{
+  "name": "WF-1.7 — Playwright (Regresion) → Gmail",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "playwright-results",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-playwright",
+      "name": "Webhook Playwright",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "playwright-results"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body    = $input.first().json.body || $input.first().json;\nconst stats   = body.stats   || {};\nconst results = (body.results || []).map(r => ({\n  file:  r.file || r.title || 'spec',\n  stats: r.stats || {},\n  tests: (r.tests || []).map(t => ({\n    title:    t.title    || '',\n    state:    t.state    || '',\n    duration: t.duration || 0,\n    err:      t.err ? String(t.err).substring(0, 150) : null,\n  }))\n}));\n\nreturn [{\n  json: {\n    suite:   body.suite || 'Playwright Suite',\n    stats,\n    results,\n    fecha:   new Date().toLocaleString('es-CL', { timeZone: 'America/Santiago' }),\n  }\n}];"
+      },
+      "id": "procesar-resultados-pw",
+      "name": "Procesar Resultados PW",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3025/run-playwright-report",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "enviar-gmail-pw",
+      "name": "Enviar Gmail PW",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true }) }}",
+        "options": {}
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [960, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Playwright": {
+      "main": [[{ "node": "Procesar Resultados PW", "type": "main", "index": 0 }]]
+    },
+    "Procesar Resultados PW": {
+      "main": [[{ "node": "Enviar Gmail PW", "type": "main", "index": 0 }]]
+    },
+    "Enviar Gmail PW": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "playwright" }, { "name": "qa" }, { "name": "email" }]
+}
