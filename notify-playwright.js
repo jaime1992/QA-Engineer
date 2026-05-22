@@ -19,38 +19,34 @@ const TEMP_FILE   = 'pw-results-temp.json'
 const spec        = process.argv[2] || ''
 
 // --- 1. Correr Playwright con JSON reporter ---
+const project = process.argv[3] || 'chromium'
+
+// Playwright escribe el JSON directamente al archivo — evita mezcla con otros logs
 const cmd = spec
-  ? `npx playwright test ${spec} --reporter=json`
-  : `npx playwright test --reporter=json`
+  ? `npx playwright test ${spec} --project=${project} --reporter=json`
+  : `npx playwright test --project=${project} --reporter=json`
 
 console.log(`[PW] Corriendo: ${cmd}`)
 
-let rawOutput = ''
 try {
-  rawOutput = execSync(cmd, { encoding: 'utf8', stdio: ['inherit', 'pipe', 'inherit'] })
+  execSync(cmd, {
+    encoding: 'utf8',
+    stdio: 'inherit',
+    env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_NAME: TEMP_FILE },
+  })
 } catch (e) {
-  // Playwright retorna exit code 1 cuando hay fallos — el JSON igual sale en stdout
-  if (e.stdout) {
-    rawOutput = e.stdout
-  } else {
-    console.error('[ERROR] No se pudo ejecutar Playwright:', e.message)
-    process.exit(1)
-  }
+  // Playwright retorna exit code 1 cuando hay fallos — el archivo JSON igual se genera
 }
 
-// Extraer solo el JSON (Playwright puede imprimir texto antes del JSON)
-const jsonStart = rawOutput.indexOf('{')
-if (jsonStart === -1) {
-  console.error('[ERROR] No se encontro JSON en el output de Playwright')
+if (!fs.existsSync(TEMP_FILE)) {
+  console.error('[ERROR] No se genero el archivo de resultados. Verifique que Playwright corrio correctamente.')
   process.exit(1)
 }
-const jsonStr = rawOutput.substring(jsonStart)
-fs.writeFileSync(TEMP_FILE, jsonStr)
 
 // --- 2. Parsear resultados ---
 let pw
 try {
-  pw = JSON.parse(jsonStr)
+  pw = JSON.parse(fs.readFileSync(TEMP_FILE, 'utf8'))
 } catch (e) {
   console.error('[ERROR] JSON invalido:', e.message)
   process.exit(1)
@@ -59,10 +55,43 @@ try {
 const pwStats = pw.stats || {}
 
 // Convertir al formato estandar (igual que Cypress) para que n8n lo procese igual
+// Playwright anida suites (archivo > describe > specs)
+// Se pasa el titulo del describe padre para armar el titulo completo
+// Formato final: "REQ-BUPA-001 | titulo describe > TC-001-AUTO | titulo test"
+// Esto permite que email-server.js extraiga el REQ correctamente
+function extraerTests(suites, tituloParent) {
+  const tests = []
+  for (const suite of (suites || [])) {
+    const tituloSuite = tituloParent || suite.title || ''
+    for (const sp of (suite.specs || [])) {
+      const firstResult = sp.tests?.[0]?.results?.[0] || {}
+      const isPassed    = sp.ok === true || firstResult.status === 'passed'
+      tests.push({
+        title:    tituloSuite ? `${tituloSuite} > ${sp.title}` : sp.title,
+        state:    isPassed ? 'passed' : 'failed',
+        duration: firstResult.duration || 0,
+        err:      firstResult.error?.message
+          ? String(firstResult.error.message).substring(0, 150)
+          : null,
+      })
+    }
+    // Recursivo — entrar en suites anidadas (describe blocks)
+    if (suite.suites && suite.suites.length > 0) {
+      tests.push(...extraerTests(suite.suites, tituloSuite))
+    }
+  }
+  return tests
+}
+
+const specName = spec
+  ? spec.split('/').pop().replace('.spec.ts', '').replace('.spec.js', '')
+  : 'Playwright Suite'
+
+// Agrupar todos los tests bajo un solo resultado con el nombre del spec
+const todosLosTests = extraerTests(pw.suites || [])
+
 const payload = {
-  suite: spec
-    ? spec.split('/').pop().replace('.spec.ts', '').replace('.spec.js', '')
-    : 'Playwright Suite',
+  suite: specName,
   stats: {
     passes:   pwStats.expected   || 0,
     failures: pwStats.unexpected || 0,
@@ -70,22 +99,11 @@ const payload = {
     tests:    (pwStats.expected || 0) + (pwStats.unexpected || 0) + (pwStats.skipped || 0),
     duration: pwStats.duration   || 0,
   },
-  results: (pw.suites || []).map(suite => ({
-    file:  suite.file || suite.title || 'spec',
+  results: [{
+    file:  specName,
     stats: {},
-    tests: (suite.specs || []).map(sp => {
-      const firstResult = sp.tests?.[0]?.results?.[0] || {}
-      const isPassed    = sp.ok === true || firstResult.status === 'passed'
-      return {
-        title:    sp.title || '',
-        state:    isPassed ? 'passed' : 'failed',
-        duration: firstResult.duration || 0,
-        err:      firstResult.error?.message
-          ? String(firstResult.error.message).substring(0, 150)
-          : null,
-      }
-    }),
-  })),
+    tests: todosLosTests,
+  }],
 }
 
 console.log(`[PW] Resultados: ${payload.stats.passes}✅ ${payload.stats.failures}❌ ${payload.stats.pending}⏳`)
