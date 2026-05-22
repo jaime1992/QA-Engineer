@@ -1,0 +1,301 @@
+{
+  "info": {
+    "name": "Ejercicios JSONPlaceholder — Aprendizaje Postman",
+    "description": "5 ejercicios progresivos para aprender Postman: GET, POST, PATCH, DELETE y flujo encadenado. API: https://jsonplaceholder.typicode.com. Autor: Jaime Quiñelen Villar — QA Lead",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "jp_base_url",
+      "value": "https://jsonplaceholder.typicode.com",
+      "type": "string"
+    },
+    {
+      "key": "post_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "EJ-001 | GET lista de posts",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{jp_base_url}}/posts",
+          "host": ["{{jp_base_url}}"],
+          "path": ["posts"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('EJ-001 | Status 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('EJ-001 | Respuesta es JSON', () => pm.response.to.be.json);",
+              "",
+              "pm.test('EJ-001 | Lista tiene 100 posts', () => {",
+              "  pm.expect(pm.response.json()).to.have.lengthOf(100);",
+              "});",
+              "",
+              "pm.test('EJ-001 | Cada post tiene id, title, body y userId', () => {",
+              "  pm.response.json().forEach(post => {",
+              "    pm.expect(post).to.have.property('id');",
+              "    pm.expect(post).to.have.property('title');",
+              "    pm.expect(post).to.have.property('body');",
+              "    pm.expect(post).to.have.property('userId');",
+              "  });",
+              "});",
+              "",
+              "pm.test('EJ-001 | Tiempo de respuesta < 1000ms', () => {",
+              "  pm.expect(pm.response.responseTime).to.be.below(1000);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "EJ-002 | GET post por ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{jp_base_url}}/posts/1",
+          "host": ["{{jp_base_url}}"],
+          "path": ["posts", "1"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('EJ-002 | Status 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('EJ-002 | ID es 1', () => {",
+              "  pm.expect(pm.response.json().id).to.eql(1);",
+              "});",
+              "",
+              "pm.test('EJ-002 | Title es string no vacio', () => {",
+              "  const title = pm.response.json().title;",
+              "  pm.expect(title).to.be.a('string').and.not.empty;",
+              "});",
+              "",
+              "pm.test('EJ-002 | userId es numero', () => {",
+              "  pm.expect(pm.response.json().userId).to.be.a('number');",
+              "});",
+              "",
+              "pm.test('EJ-002 | Tiempo < 500ms', () => {",
+              "  pm.expect(pm.response.responseTime).to.be.below(500);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "EJ-003 | POST crear post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Post de prueba QA\",\n  \"body\": \"Contenido creado por Jaime QA Lead\",\n  \"userId\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{jp_base_url}}/posts",
+          "host": ["{{jp_base_url}}"],
+          "path": ["posts"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('EJ-003 | Status 201 — recurso creado', () => pm.response.to.have.status(201));",
+              "",
+              "pm.test('EJ-003 | Respuesta tiene id generado', () => {",
+              "  pm.expect(pm.response.json()).to.have.property('id');",
+              "});",
+              "",
+              "pm.test('EJ-003 | Title coincide con el enviado', () => {",
+              "  pm.expect(pm.response.json().title).to.eql('Post de prueba QA');",
+              "});",
+              "",
+              "pm.test('EJ-003 | userId es 1', () => {",
+              "  pm.expect(pm.response.json().userId).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "EJ-004 | PATCH actualizar titulo",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Titulo actualizado por QA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{jp_base_url}}/posts/1",
+          "host": ["{{jp_base_url}}"],
+          "path": ["posts", "1"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('EJ-004 | Status 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('EJ-004 | Title fue actualizado', () => {",
+              "  pm.expect(pm.response.json().title).to.eql('Titulo actualizado por QA');",
+              "});",
+              "",
+              "pm.test('EJ-004 | Body original sigue presente (PATCH no borra otros campos)', () => {",
+              "  pm.expect(pm.response.json()).to.have.property('body');",
+              "});",
+              "",
+              "pm.test('EJ-004 | userId sigue siendo 1', () => {",
+              "  pm.expect(pm.response.json().userId).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "EJ-005 | Flujo — POST crea y guarda id",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Post del flujo encadenado\",\n  \"body\": \"Este post sera usado en el siguiente request\",\n  \"userId\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{jp_base_url}}/posts",
+          "host": ["{{jp_base_url}}"],
+          "path": ["posts"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('EJ-005 | Status 201 — post creado', () => pm.response.to.have.status(201));",
+              "",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('post_id', body.id);",
+              "",
+              "pm.test('EJ-005 | ID guardado en variable post_id', () => {",
+              "  pm.expect(pm.collectionVariables.get('post_id')).to.exist;",
+              "});",
+              "",
+              "pm.test('EJ-005 | Title es correcto', () => {",
+              "  pm.expect(body.title).to.eql('Post del flujo encadenado');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "EJ-005 | Flujo — GET verifica post creado",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{jp_base_url}}/posts/{{post_id}}",
+          "host": ["{{jp_base_url}}"],
+          "path": ["posts", "{{post_id}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('EJ-005 | Status 200 — post existe', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('EJ-005 | Title coincide con el creado', () => {",
+              "  pm.expect(pm.response.json().title).to.eql('Post del flujo encadenado');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "EJ-005 | Flujo — DELETE elimina post",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{jp_base_url}}/posts/{{post_id}}",
+          "host": ["{{jp_base_url}}"],
+          "path": ["posts", "{{post_id}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('EJ-005 | Status 200 — post eliminado', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('EJ-005 | Body vacio tras DELETE', () => {",
+              "  pm.expect(pm.response.json()).to.eql({});",
+              "});",
+              "",
+              "pm.collectionVariables.unset('post_id');"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

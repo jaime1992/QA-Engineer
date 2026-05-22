@@ -1,0 +1,23 @@
+{
+  "name": "QA Engineer — Variables",
+  "values": [
+    {
+      "key": "jp_base_url",
+      "value": "https://jsonplaceholder.typicode.com",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "bupa_base_url",
+      "value": "https://portalpaciente.bupa.cl",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "post_id",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    }
+  ]
+}

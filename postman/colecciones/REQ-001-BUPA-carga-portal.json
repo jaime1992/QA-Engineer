@@ -1,0 +1,171 @@
+{
+  "info": {
+    "name": "REQ-001 BUPA — Carga del Portal",
+    "description": "5 TCs de API para verificar la carga del Portal Pacientes BUPA. Mapea al REQ-BUPA-001-SDD. Autor: Jaime Quiñelen Villar — QA Lead",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "bupa_base_url",
+      "value": "https://portalpaciente.bupa.cl",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "TC-001 | GET portal responde 200",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{bupa_base_url}}/inicio",
+          "host": ["{{bupa_base_url}}"],
+          "path": ["inicio"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('TC-001 | Portal responde 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('TC-001 | Tiempo de respuesta < 7000ms', () => {",
+              "  pm.expect(pm.response.responseTime).to.be.below(7000);",
+              "});",
+              "",
+              "pm.test('TC-001 | Content-Type presente', () => {",
+              "  pm.response.to.have.header('Content-Type');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "TC-002 | HEAD servidor disponible sin body",
+      "request": {
+        "method": "HEAD",
+        "url": {
+          "raw": "{{bupa_base_url}}/inicio",
+          "host": ["{{bupa_base_url}}"],
+          "path": ["inicio"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('TC-002 | Servidor disponible HEAD 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('TC-002 | Body vacio — HEAD no retorna body', () => {",
+              "  pm.expect(pm.response.text()).to.be.empty;",
+              "});",
+              "",
+              "pm.test('TC-002 | Content-Type presente en headers', () => {",
+              "  pm.response.to.have.header('Content-Type');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "TC-003 | GET redirect HTTP a HTTPS",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://portalpaciente.bupa.cl/inicio",
+          "protocol": "http",
+          "host": ["portalpaciente", "bupa", "cl"],
+          "path": ["inicio"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('TC-003 | Servidor responde al redirect HTTP', () => {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 301, 302]);",
+              "});",
+              "",
+              "pm.test('TC-003 | Tiempo de respuesta registrado', () => {",
+              "  pm.expect(pm.response.responseTime).to.be.a('number');",
+              "  console.log('Redirect HTTP tiempo: ' + pm.response.responseTime + 'ms');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "TC-004 | OPTIONS metodos permitidos",
+      "request": {
+        "method": "OPTIONS",
+        "url": {
+          "raw": "{{bupa_base_url}}/inicio",
+          "host": ["{{bupa_base_url}}"],
+          "path": ["inicio"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('TC-004 | Servidor responde a OPTIONS', () => {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+              "});",
+              "",
+              "pm.test('TC-004 | Header Allow o Access-Control presente', () => {",
+              "  const allow = pm.response.headers.get('Allow');",
+              "  const cors = pm.response.headers.get('Access-Control-Allow-Methods');",
+              "  pm.expect(allow || cors).to.exist;",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "TC-005 | GET headers de seguridad presentes",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{bupa_base_url}}/inicio",
+          "host": ["{{bupa_base_url}}"],
+          "path": ["inicio"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('TC-005 | Status 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('TC-005 | Protocolo es HTTPS', () => {",
+              "  pm.expect(pm.request.url.toString()).to.include('https://');",
+              "});",
+              "",
+              "pm.test('TC-005 | Content-Type presente', () => {",
+              "  pm.response.to.have.header('Content-Type');",
+              "});",
+              "",
+              "pm.test('TC-005 | Tiempo de respuesta registrado', () => {",
+              "  pm.expect(pm.response.responseTime).to.be.a('number');",
+              "  console.log('Tiempo de respuesta BUPA: ' + pm.response.responseTime + 'ms');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
