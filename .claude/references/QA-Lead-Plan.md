@@ -12,6 +12,107 @@
 
 ---
 
+## Descriptor de Cargo Oficial
+
+### Resumen del Rol
+
+| Campo | Detalle |
+|---|---|
+| **Titulo** | QA Lead IA |
+| **Alcance** | Transversal — multiples celulas agiles multidisciplinarias |
+| **Enfoque** | Piramide de Testing + Spec-Driven Development (SDD) |
+| **IA en el rol** | Asistente, no decisora — validar outputs con criterio tecnico |
+| **Metodologias** | Agile/Scrum, TDD, BDD, SDD, CI/CD |
+
+### Responsabilidades Generales
+
+| # | Responsabilidad |
+|---|---|
+| 1 | Proponer mejoras transversales en QA para estandarizar lineamientos, procesos y herramientas en varias celulas |
+| 2 | Diseñar, ejecutar y mantener planes de testing E2E siguiendo especificaciones funcionales y tecnicas |
+| 3 | Liderar y supervisar al equipo de QA — asignar tareas, revisar resultados, fomentar cultura de calidad |
+| 4 | Implementar metricas de calidad (cobertura, densidad de defectos, tiempo de resolucion) y reportar en ceremonias agiles |
+| 5 | Participar en code reviews, revision de especificaciones y definicion de criterios de aceptacion |
+| 6 | Contribuir a la documentacion tecnica: planes de test, reportes de defectos, flujos de validacion |
+| 7 | Utilizar IA como apoyo en generacion de casos de prueba, deteccion de bugs, refactor de scripts y analisis de logs |
+| 8 | Trabajar con especificaciones como fuente de verdad (SDD), alineando los tests con lo definido |
+
+### Piramide de Testing (Cohn)
+
+| Nivel | % | Herramientas | Ejemplos |
+|---|---|---|---|
+| **Unitarias** | 70% | Go test / Jest | Go backend, Angular frontend, >80% cobertura en CI (Azure DevOps) |
+| **Integracion** | 20% | Postman / Newman / N8N | APIs REST, workflows, contratos SDD |
+| **E2E / UI** | 10% | Playwright / Cypress / Appium / Selenium | Web (Go/Angular/Capacitor), BrowserStack mobile |
+
+### Responsabilidades Especificas
+
+| Area | Detalle |
+|---|---|
+| **Estrategia** | Testing manual, automatizado, performance y seguridad para apps web (Go/Angular), hibridas (Capacitor) y mobile (iOS/Android) |
+| **APIs** | Diseñar y ejecutar casos de prueba para APIs RESTful, webhooks y flujos E2E |
+| **Automatizacion** | Supervisar Go test, Jest, Postman/Newman, Playwright, Cypress, Appium/Selenium en CI/CD (Azure DevOps, GitHub Actions) y N8N |
+| **Riesgos** | Identificar riesgos, priorizar defectos y colaborar con equipos de desarrollo y producto |
+| **Observabilidad** | Monitorear produccion con Datadog, gestionar alertas y calidad en produccion |
+| **Cloud** | Pruebas en Azure/GCP/AWS, sobre Docker/Kubernetes, con feature flags y OTA en Capacitor |
+| **Normativa** | Asegurar accesibilidad, performance y cumplimiento normativo en contextos de salud y seguros |
+
+### Tecnologias y Competencias
+
+| Categoria | Herramientas |
+|---|---|
+| **Testing Frameworks** | Playwright, Cypress, Go test, Jest (Angular), Postman/Newman, Selenium/Appium |
+| **QA Tools** | Jira, Azure DevOps, TestRail, Azure Test Plans, BrowserStack |
+| **Workflows** | N8N para integraciones, automatizacion de pruebas y orquestacion de flujos QA |
+| **Metodologias** | Agile/Scrum, TDD, BDD, SDD, CI/CD con Azure DevOps y GitHub Actions |
+| **Conocimientos Tecnicos** | APIs REST/GraphQL, PostgreSQL/MongoDB, Docker/Kubernetes, microservicios, full-stack (Go/Angular, Capacitor) |
+| **IA aplicada a QA** | Copilot Enterprise, Claude u otras LLMs — siempre validando outputs con criterio tecnico |
+| **Mobile** | Capacitor, iOS/Swift, Android/Kotlin, Firebase |
+
+### Requisitos del Cargo
+
+| Tipo | Requisito |
+|---|---|
+| **Formacion** | Titulo en Ingenieria Informatica o carrera afin |
+| **Experiencia QA** | 5+ años en QA/testing |
+| **Experiencia liderazgo** | 2+ años liderando equipos o iniciativas de QA |
+| **Entornos** | Agile, microservicios, full-stack (Go/Angular, Capacitor) |
+| **IA** | Experiencia usando IA como apoyo en QA con foco en validacion critica de resultados |
+| **Git** | Manejo avanzado de Git y flujos de PRs |
+| **Deseable** | Experiencia en salud / HIS / seguros |
+| **Deseable** | ISTQB Test Manager/Lead, AZ-400 DevOps, certificaciones AWS/GCP |
+| **Deseable** | Experiencia con Datadog y Kong Gateway |
+| **Deseable** | N8N avanzado para automatizacion de flujos de prueba |
+
+---
+
+## Mi Estado Actual — Analisis de Brechas
+
+| Area | Requerido por el rol | Mi nivel hoy | Prioridad |
+|---|---|---|---|
+| Cypress E2E | Avanzado | Intermedio-Alto | Mantener |
+| Playwright E2E | Avanzado | Basico — iniciado 2026-05-22 | Alta |
+| N8N | Avanzado | Intermedio | Mantener |
+| Jira + SDD | Avanzado | Intermedio | Mantener |
+| IA aplicada a QA (Claude) | Avanzado | Solido — flujo diario | Mantener |
+| GitHub Actions CI/CD | Avanzado | Intermedio | Mantener |
+| **Azure DevOps** | Avanzado | Sin experiencia | Alta |
+| **Postman / Newman** | Avanzado | Sin experiencia | Alta |
+| **TestRail / Azure Test Plans** | Avanzado | Sin experiencia | Alta |
+| **Jest (Angular unit testing)** | Avanzado | Sin experiencia | Media |
+| **Go test (backend)** | Avanzado | Sin experiencia | Media |
+| **Docker / Kubernetes** | Avanzado | Sin experiencia | Media |
+| **BrowserStack** | Avanzado | Sin experiencia | Media |
+| **Appium / Selenium** | Avanzado | Sin experiencia | Baja |
+| **Datadog** | Deseable | Sin experiencia | Baja |
+| **Capacitor / Mobile** | Avanzado | Sin experiencia | Baja |
+| **APIs GraphQL** | Avanzado | Sin experiencia | Media |
+| **Kong Gateway** | Deseable | Sin experiencia | Baja |
+
+> **Lectura:** Alta = aprender antes del 8 de junio o en las primeras semanas. Media = primer mes. Baja = segundo mes en adelante segun lo que exija el stack real de BUPA.
+
+---
+
 ## Objetivo General
 
 Llegar preparado el primer día con una estrategia QA clara y un plan de acción para los primeros 30 días, demostrando valor desde la primera semana y posicionándose como referente de calidad en el equipo de tecnología de BUPA Chile.
