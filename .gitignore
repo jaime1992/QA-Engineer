@@ -19,6 +19,10 @@ cypress.env.json
 # Fixtures con credenciales reales — nunca commitear
 cypress/fixtures/auth/credenciales-validas.json
 
+# Postman — reportes generados y datos sensibles
+postman/reportes/
+postman/datos/credenciales-validas.json
+
 # Logs
 *.log
 npm-debug.log*
