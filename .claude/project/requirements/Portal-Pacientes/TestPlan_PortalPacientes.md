@@ -14,6 +14,41 @@
 
 ---
 
+## Resumen Ejecutivo
+
+| Metrica | Valor |
+|---|---|
+| **Total TCs** | 26 (21 FP + 5 EC) |
+| **Modulo** | Inicio — Dashboard post-login |
+| **Ambiente** | UAT / PROD |
+| **Tipo de prueba** | Manual |
+| **Categorias cubiertas** | UI, UX, Frontend |
+| **TCs Criticos** | 4 (TC-003, TC-007, TC-008, TC-001-EC, TC-002-EC) |
+| **TCs de alta prioridad** | 12 |
+| **Estado general** | Por Ejecutar |
+
+### Distribucion de TCs por area
+
+| Area | TCs | Ejemplos |
+|---|---|---|
+| **Header** | 3 FP + 2 EC | Logo, nombre usuario, cerrar sesion, sesion expirada |
+| **Menu lateral** | 8 FP | Inicio, Mis citas, Historial, Examenes, Familia, Planes, Perfil, Ayuda |
+| **Tarjetas de atencion** | 4 FP | Telemedicina, Consulta Medica, Dental, Examenes |
+| **Accesos rapidos** | 3 FP | Proximas citas, Mis examenes, Historial de citas |
+| **Otros elementos** | 3 FP | Saludo, texto subtitulo, seccion cirugia |
+| **Responsive** | 2 EC | Tablet 768px, movil 375px |
+
+### Criterios de exito (go/no-go)
+
+| Criterio | Umbral |
+|---|---|
+| TCs FP en PASS | 100% antes de avanzar a PROD |
+| TCs EC en PASS | 80% minimo |
+| Bugs criticos abiertos | 0 |
+| Pass rate global | >= 90% |
+
+---
+
 ## 1. Objetivo
 
 Verificar que el módulo Inicio del Portal Paciente BUPA funciona correctamente una vez autenticado el usuario, cubriendo la navegación del menú lateral, las tarjetas de atención, los accesos rápidos y los elementos del header, en los ambientes UAT y PROD.
@@ -87,34 +122,34 @@ Las pruebas están completas cuando:
 
 ## 6. Tabla Resumen de Casos de Prueba
 
-| TC-ID | Menú | Título | Tipo | Categoría | Severidad | Prioridad | Estado | Bug |
-|-------|------|--------|------|-----------|-----------|-----------|--------|-----|
-| TC-001-FP | Header | Logo Mi Portal Bupa visible | FP | UI | Medium | Medium | Por Ejecutar | — |
-| TC-002-FP | Header | Nombre de usuario en header | FP | UI | Medium | High | Por Ejecutar | — |
-| TC-003-FP | Header | Botón "Cerrar sesión" visible y funcional | FP | Frontend | Critical | High | Por Ejecutar | — |
-| TC-004-FP | Inicio | Menú "Inicio" activo al cargar | FP | UI | Low | Medium | Por Ejecutar | — |
-| TC-005-FP | Inicio | Saludo personalizado visible | FP | UX | Medium | High | Por Ejecutar | — |
-| TC-006-FP | Inicio | Texto "¿Qué tipo de atención necesitas?" visible | FP | UI | Low | Medium | Por Ejecutar | — |
-| TC-007-FP | Inicio | Tarjeta "Telemedicina" visible y clicable | FP | Frontend | Critical | High | Por Ejecutar | — |
-| TC-008-FP | Inicio | Tarjeta "Consulta Médica" visible y clicable | FP | Frontend | Critical | High | Por Ejecutar | — |
-| TC-009-FP | Inicio | Tarjeta "Consulta Dental" visible y clicable | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-010-FP | Inicio | Tarjeta "Exámenes" visible y clicable | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-011-FP | Inicio | Acceso rápido "Próximas citas" | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-012-FP | Inicio | Acceso rápido "Mis exámenes" | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-013-FP | Inicio | Acceso rápido "Historial de citas" | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-014-FP | Inicio | Sección "¿Necesitas Cotizar tu Cirugía?" visible | FP | UI | Medium | Medium | Por Ejecutar | — |
-| TC-015-FP | Mis citas | Navegación a "Mis citas" | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-016-FP | Historial de atenciones | Navegación a "Historial de atenciones" | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-017-FP | Mis exámenes | Navegación a "Mis exámenes" | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-018-FP | Mi familia | Navegación a "Mi familia" | FP | Frontend | Medium | Medium | Por Ejecutar | — |
-| TC-019-FP | Planes y Beneficios | Navegación a "Planes y Beneficios" | FP | Frontend | High | High | Por Ejecutar | — |
-| TC-020-FP | Mi perfil | Navegación a "Mi perfil" | FP | Frontend | Medium | Medium | Por Ejecutar | — |
-| TC-021-FP | Centro de ayuda | Navegación a "Centro de ayuda" | FP | Frontend | Low | Low | Por Ejecutar | — |
-| TC-001-EC | Header | Cerrar sesión y presionar "atrás" del navegador | EC | Frontend | Critical | High | Por Ejecutar | — |
-| TC-002-EC | Header | Sesión expirada — recarga de página | EC | Frontend | Critical | High | Por Ejecutar | — |
-| TC-003-EC | Inicio | Nombre de usuario muy largo en saludo | EC | UI | Medium | Low | Por Ejecutar | — |
-| TC-004-EC | Inicio | Responsive en tablet (768px) | EC | UI | Medium | Medium | Por Ejecutar | — |
-| TC-005-EC | Inicio | Responsive en móvil (375px) | EC | UI | High | Medium | Por Ejecutar | — |
+| TC-ID | Menú | Título | Resultado Esperado | Tipo | Categoría | Severidad | Prioridad | Estado | Bug |
+|-------|------|--------|--------------------|------|-----------|-----------|-----------|--------|-----|
+| TC-001-FP | Header | Logo Mi Portal Bupa visible | Logo visible con ícono y texto legible, sin distorsión | FP | UI | Medium | Medium | Por Ejecutar | — |
+| TC-002-FP | Header | Nombre de usuario en header | Ícono de persona + nombre del usuario autenticado visible | FP | UI | Medium | High | Por Ejecutar | — |
+| TC-003-FP | Header | Botón "Cerrar sesión" visible y funcional | Botón visible; al hacer clic destruye sesión y redirige al login | FP | Frontend | Critical | High | Por Ejecutar | — |
+| TC-004-FP | Inicio | Menú "Inicio" activo al cargar | Ítem "Inicio" resaltado en azul; demás ítems sin resaltar | FP | UI | Low | Medium | Por Ejecutar | — |
+| TC-005-FP | Inicio | Saludo personalizado visible | "¡Hola [Nombre]!" visible con el nombre del usuario autenticado | FP | UX | Medium | High | Por Ejecutar | — |
+| TC-006-FP | Inicio | Texto "¿Qué tipo de atención necesitas?" visible | Texto visible y legible sobre las tarjetas de atención | FP | UI | Low | Medium | Por Ejecutar | — |
+| TC-007-FP | Inicio | Tarjeta "Telemedicina" visible y clicable | Tarjeta visible con ícono y texto; navega al flujo de Telemedicina | FP | Frontend | Critical | High | Por Ejecutar | — |
+| TC-008-FP | Inicio | Tarjeta "Consulta Médica" visible y clicable | Tarjeta visible con ícono y texto; navega al flujo de Consulta Médica | FP | Frontend | Critical | High | Por Ejecutar | — |
+| TC-009-FP | Inicio | Tarjeta "Consulta Dental" visible y clicable | Tarjeta visible con ícono y texto; navega al flujo de Consulta Dental | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-010-FP | Inicio | Tarjeta "Exámenes" visible y clicable | Tarjeta visible con ícono y texto; navega al flujo de Exámenes | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-011-FP | Inicio | Acceso rápido "Próximas citas" | Card visible con ícono y subtexto; navega al detalle de reservas | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-012-FP | Inicio | Acceso rápido "Mis exámenes" | Card visible con ícono y subtexto; navega a resultados de exámenes | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-013-FP | Inicio | Acceso rápido "Historial de citas" | Card visible con ícono y subtexto; navega al historial con recetas y órdenes | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-014-FP | Inicio | Sección "¿Necesitas Cotizar tu Cirugía?" visible | Sección visible y legible al hacer scroll | FP | UI | Medium | Medium | Por Ejecutar | — |
+| TC-015-FP | Mis citas | Navegación a "Mis citas" | Sistema navega a sección de citas; ítem resaltado en menú | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-016-FP | Historial de atenciones | Navegación a "Historial de atenciones" | Sistema navega al historial clínico; ítem resaltado en menú | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-017-FP | Mis exámenes | Navegación a "Mis exámenes" | Sistema navega a sección de exámenes; ítem resaltado en menú | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-018-FP | Mi familia | Navegación a "Mi familia" | Sistema navega al grupo familiar; ítem resaltado en menú | FP | Frontend | Medium | Medium | Por Ejecutar | — |
+| TC-019-FP | Planes y Beneficios | Navegación a "Planes y Beneficios" | Sistema navega a planes y coberturas; ítem resaltado en menú | FP | Frontend | High | High | Por Ejecutar | — |
+| TC-020-FP | Mi perfil | Navegación a "Mi perfil" | Sistema navega a datos personales del paciente; ítem resaltado en menú | FP | Frontend | Medium | Medium | Por Ejecutar | — |
+| TC-021-FP | Centro de ayuda | Navegación a "Centro de ayuda" | Sistema navega al contenido de ayuda; ítem resaltado en menú | FP | Frontend | Low | Low | Por Ejecutar | — |
+| TC-001-EC | Header | Cerrar sesión y presionar "atrás" del navegador | Sistema bloquea acceso y redirige al login — no muestra contenido protegido | EC | Frontend | Critical | High | Por Ejecutar | — |
+| TC-002-EC | Header | Sesión expirada — recarga de página | Sistema detecta sesión expirada y redirige al login con mensaje informativo | EC | Frontend | Critical | High | Por Ejecutar | — |
+| TC-003-EC | Inicio | Nombre de usuario muy largo en saludo | Nombre se trunca o adapta sin romper el layout del header ni del saludo | EC | UI | Medium | Low | Por Ejecutar | — |
+| TC-004-EC | Inicio | Responsive en tablet (768px) | Layout adaptado sin elementos superpuestos ni cortados a 768px | EC | UI | Medium | Medium | Por Ejecutar | — |
+| TC-005-EC | Inicio | Responsive en móvil (375px) | Menú hamburguesa, tarjetas en columna única, sin scroll horizontal a 375px | EC | UI | High | Medium | Por Ejecutar | — |
 
 > Estados posibles: `Por Ejecutar` | `PASS` | `FAIL` | `Bloqueado` | `No Aplica`
 

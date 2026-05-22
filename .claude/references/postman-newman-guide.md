@@ -106,8 +106,53 @@ pm.collectionVariables.set('post_id', body.id)
 | `PUT` | Reemplazar un recurso **completo** | Si — el resultado es siempre el mismo | Reemplazar todos los datos de un paciente |
 | `PATCH` | Modificar solo **campos especificos** | Si | Cambiar solo el telefono del paciente |
 | `DELETE` | Eliminar un recurso | Si — eliminar algo ya eliminado no cambia el resultado | Cancelar una cita |
+| `HEAD` | Igual que GET pero **sin body** — solo retorna los headers | Si | Verificar si el portal responde y que headers tiene, sin descargar la pagina completa |
+| `OPTIONS` | Pregunta al servidor **que metodos permite** en un endpoint — usado en CORS | Si | Verificar que el endpoint de login acepta POST y no GET |
 
-> **Idempotente:** llamar al endpoint una o diez veces produce el mismo estado final. GET, PUT, PATCH y DELETE lo son. POST no.
+> **Idempotente:** llamar al endpoint una o diez veces produce el mismo estado final. GET, PUT, PATCH, DELETE, HEAD y OPTIONS lo son. POST no.
+
+### Cuando usar HEAD y OPTIONS en QA
+
+| Metodo | Caso de uso en testing |
+|---|---|
+| `HEAD` | Verificar que un endpoint existe y esta disponible **sin consumir ancho de banda** (util en health checks y smoke tests rapidos) |
+| `HEAD` | Validar headers de seguridad (`Content-Type`, `Strict-Transport-Security`) sin descargar el body |
+| `OPTIONS` | Verificar configuracion **CORS** — que el servidor permite llamadas desde el frontend Angular |
+| `OPTIONS` | Confirmar que un endpoint acepta los metodos correctos antes de hacer el request real |
+
+### Ejemplo HEAD en Postman
+
+```
+HEAD {{base_url}}/inicio
+
+Tests:
+```
+```javascript
+pm.test('TC-001 | Servidor disponible (HEAD)', () => {
+  pm.response.to.have.status(200)
+})
+
+pm.test('TC-002 | Content-Type presente sin descargar body', () => {
+  pm.response.to.have.header('Content-Type')
+})
+```
+
+### Ejemplo OPTIONS en Postman
+
+```
+OPTIONS {{base_url}}/api/auth/login
+
+Tests:
+```
+```javascript
+pm.test('TC-001 | Endpoint acepta POST', () => {
+  const allow = pm.response.headers.get('Allow') || pm.response.headers.get('Access-Control-Allow-Methods')
+  pm.expect(allow).to.include('POST')
+})
+
+pm.test('TC-002 | CORS permite origen del frontend', () => {
+  pm.response.to.have.header('Access-Control-Allow-Origin')
+})
 
 ### GET — Obtener recurso
 
