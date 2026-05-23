@@ -26,6 +26,7 @@ postman/datos/credenciales-validas.json
 # Logs
 *.log
 npm-debug.log*
+log/
 
 # OS
 .DS_Store
