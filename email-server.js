@@ -235,12 +235,13 @@ app.post("/run-playwright-report", async (req, res) => {
   let rowIndex = 0;
   (results || []).forEach(spec => {
     (spec.tests || []).forEach(t => {
+      const isPending  = t.state === "pending";
       const isPassed   = t.state === "passed";
       const rowBg      = rowIndex % 2 === 0 ? "#ffffff" : BUPA_BLUE_LIGHT;
-      const stateBg    = isPassed ? BUPA_GREEN_BG : BUPA_RED_BG;
-      const stateColor = isPassed ? BUPA_GREEN    : BUPA_RED;
-      const stateText  = isPassed ? "PASSED"      : "FAILED";
-      const icon       = isPassed ? "🟢" : "🔴";
+      const stateBg    = isPending ? BUPA_YELLOW_BG : isPassed ? BUPA_GREEN_BG : BUPA_RED_BG;
+      const stateColor = isPending ? BUPA_YELLOW    : isPassed ? BUPA_GREEN    : BUPA_RED;
+      const stateText  = isPending ? "SKIP"         : isPassed ? "PASSED"      : "FAILED";
+      const icon       = isPending ? "⏳" : isPassed ? "🟢" : "🔴";
       const errTd      = t.err
         ? `<td style="padding:9px 12px;border-bottom:1px solid ${BUPA_BORDER};color:${BUPA_RED};font-size:11px;background:${rowBg};font-family:monospace">${t.err}</td>`
         : `<td style="padding:9px 12px;border-bottom:1px solid ${BUPA_BORDER};color:${BUPA_TEXT3};font-size:12px;text-align:center;background:${rowBg}">—</td>`;

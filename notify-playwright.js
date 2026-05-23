@@ -59,25 +59,27 @@ const pwStats = pw.stats || {}
 // Se pasa el titulo del describe padre para armar el titulo completo
 // Formato final: "REQ-BUPA-001 | titulo describe > TC-001-AUTO | titulo test"
 // Esto permite que email-server.js extraiga el REQ correctamente
-function extraerTests(suites, tituloParent) {
+function extraerTests(suites) {
   const tests = []
   for (const suite of (suites || [])) {
-    const tituloSuite = tituloParent || suite.title || ''
+    const tituloDescribe = suite.title || ''
     for (const sp of (suite.specs || [])) {
-      const firstResult = sp.tests?.[0]?.results?.[0] || {}
-      const isPassed    = sp.ok === true || firstResult.status === 'passed'
+      const firstTest   = sp.tests?.[0] || {}
+      const firstResult = firstTest.results?.[0] || {}
+      const isSkipped   = firstTest.status === 'skipped' || firstResult.status === 'skipped'
+      const isPassed    = !isSkipped && (sp.ok === true || firstResult.status === 'passed')
+      const state       = isSkipped ? 'pending' : isPassed ? 'passed' : 'failed'
       tests.push({
-        title:    tituloSuite ? `${tituloSuite} > ${sp.title}` : sp.title,
-        state:    isPassed ? 'passed' : 'failed',
+        title:    tituloDescribe ? `${tituloDescribe} > ${sp.title}` : sp.title,
+        state,
         duration: firstResult.duration || 0,
         err:      firstResult.error?.message
           ? String(firstResult.error.message).substring(0, 150)
           : null,
       })
     }
-    // Recursivo — entrar en suites anidadas (describe blocks)
     if (suite.suites && suite.suites.length > 0) {
-      tests.push(...extraerTests(suite.suites, tituloSuite))
+      tests.push(...extraerTests(suite.suites))
     }
   }
   return tests
