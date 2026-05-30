@@ -739,7 +739,183 @@ npx playwright test --retries=0
 
 ---
 
-## 22. Conocimiento especifico — Portal Pacientes BUPA
+## 22. Page Object Model Avanzado
+
+Extensión del POM básico (sección 8) para proyectos con múltiples páginas y componentes reutilizables.
+
+### Estructura de carpetas
+
+```
+playwright/
+├── pages/
+│   ├── BasePage.ts
+│   ├── LoginPage.ts
+│   ├── DashboardPage.ts
+│   └── components/
+│       └── NavBar.ts
+├── fixtures/
+│   └── pages.ts
+└── e2e/
+    └── login.spec.ts
+```
+
+### BasePage — clase base
+
+```typescript
+import { Page } from '@playwright/test'
+
+export class BasePage {
+  readonly page: Page
+
+  constructor(page: Page) {
+    this.page = page
+  }
+
+  async goto(path: string) {
+    await this.page.goto(path)
+  }
+
+  async esperarCarga() {
+    await this.page.waitForLoadState('networkidle')
+  }
+}
+```
+
+### LoginPage — hereda de BasePage
+
+```typescript
+import { Page, Locator, expect } from '@playwright/test'
+import { BasePage } from './BasePage'
+
+export class LoginPage extends BasePage {
+  readonly campoRut:       Locator
+  readonly campoPassword:  Locator
+  readonly botonContinuar: Locator
+  readonly botonLogin:     Locator
+  readonly mensajeError:   Locator
+
+  constructor(page: Page) {
+    super(page)
+    this.campoRut       = page.locator('[data-testid="rut-input"]')
+    this.campoPassword  = page.locator('[data-testid="password-input"]')
+    this.botonContinuar = page.locator('[data-testid="btn-continuar"]')
+    this.botonLogin     = page.locator('[data-testid="btn-login"]')
+    this.mensajeError   = page.locator('[data-testid="error-message"]')
+  }
+
+  async navegarALogin() {
+    await this.goto('/login')
+    await this.esperarCarga()
+  }
+
+  async loginCompleto(rut: string, password: string) {
+    await this.campoRut.fill(rut)
+    await this.botonContinuar.click()
+    await this.campoPassword.fill(password)
+    await this.botonLogin.click()
+  }
+
+  async verificarErrorVisible() {
+    await expect(this.mensajeError).toBeVisible()
+  }
+}
+```
+
+### Componente reutilizable — NavBar
+
+```typescript
+import { Page, Locator } from '@playwright/test'
+
+export class NavBar {
+  readonly linkCitas:         Locator
+  readonly botonCerrarSesion: Locator
+
+  constructor(page: Page) {
+    this.linkCitas         = page.locator('[data-testid="nav-citas"]')
+    this.botonCerrarSesion = page.locator('[data-testid="nav-logout"]')
+  }
+
+  async irACitas() { await this.linkCitas.click() }
+  async cerrarSesion() { await this.botonCerrarSesion.click() }
+}
+```
+
+### DashboardPage — combina componentes
+
+```typescript
+import { Page, Locator } from '@playwright/test'
+import { BasePage } from './BasePage'
+import { NavBar }   from './components/NavBar'
+
+export class DashboardPage extends BasePage {
+  readonly navBar:            NavBar
+  readonly tarjetaBienvenida: Locator
+
+  constructor(page: Page) {
+    super(page)
+    this.navBar            = new NavBar(page)
+    this.tarjetaBienvenida = page.locator('[data-testid="welcome-card"]')
+  }
+
+  async verificarAccesoCompleto() {
+    await this.tarjetaBienvenida.waitFor({ state: 'visible' })
+  }
+}
+```
+
+### Fixture — inyección de pages en specs
+
+```typescript
+// fixtures/pages.ts
+import { test as base } from '@playwright/test'
+import { LoginPage }     from '../pages/LoginPage'
+import { DashboardPage } from '../pages/DashboardPage'
+
+type Pages = { loginPage: LoginPage; dashboardPage: DashboardPage }
+
+export const test = base.extend<Pages>({
+  loginPage:     async ({ page }, use) => { await use(new LoginPage(page)) },
+  dashboardPage: async ({ page }, use) => { await use(new DashboardPage(page)) }
+})
+
+export { expect } from '@playwright/test'
+```
+
+### Spec con fixture
+
+```typescript
+import { test, expect } from '../fixtures/pages'
+
+test.describe('REQ-002 — Login Portal', () => {
+
+  test('TC-001 | Login exitoso redirige al dashboard', async ({ loginPage, dashboardPage }) => {
+    await loginPage.navegarALogin()
+    await loginPage.loginCompleto('12345678-9', 'password123')
+    await dashboardPage.verificarAccesoCompleto()
+  })
+
+  test('TC-002 | RUT invalido muestra error', async ({ loginPage }) => {
+    await loginPage.navegarALogin()
+    await loginPage.campoRut.fill('00000000-0')
+    await loginPage.botonContinuar.click()
+    await loginPage.verificarErrorVisible()
+  })
+
+})
+```
+
+### Reglas
+
+| Regla | Detalle |
+|-------|---------|
+| BasePage siempre | Toda page class hereda de BasePage |
+| Componentes separados | NavBar, Modal, Footer → clase propia reutilizable |
+| Sin assertions en pages | `expect()` solo en el spec |
+| Métodos por acción de negocio | `loginCompleto()` agrupa pasos — no exponer `fill()` directamente |
+
+---
+
+## 23. Conocimiento especifico — Portal Pacientes BUPA
 
 | Dato | Detalle |
 |---|---|

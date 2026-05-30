@@ -642,7 +642,166 @@ allure-report/
 
 ---
 
-## 22. Comandos de terminal
+## 22. Page Object Model Avanzado
+
+Cypress no usa clases con constructor de la misma forma que Playwright, pero el patrón POM se implementa con clases ES6 que encapsulan selectores y acciones por página.
+
+### Estructura de carpetas
+
+```
+cypress/
+├── pages/
+│   ├── BasePage.js
+│   ├── LoginPage.js
+│   ├── DashboardPage.js
+│   └── components/
+│       └── NavBar.js
+└── e2e/
+    └── login.cy.js
+```
+
+### BasePage — clase base
+
+```javascript
+// cypress/pages/BasePage.js
+export class BasePage {
+  navigate(path) {
+    cy.visit(path)
+  }
+
+  esperarCarga() {
+    cy.document().its('readyState').should('eq', 'complete')
+  }
+
+  tomarCaptura(nombre) {
+    cy.screenshot(nombre)
+  }
+}
+```
+
+### LoginPage — hereda de BasePage
+
+```javascript
+// cypress/pages/LoginPage.js
+import { BasePage } from './BasePage'
+
+export class LoginPage extends BasePage {
+  get campoRut()       { return cy.get('[data-testid="rut-input"]') }
+  get campoPassword()  { return cy.get('[data-testid="password-input"]') }
+  get botonContinuar() { return cy.get('[data-testid="btn-continuar"]') }
+  get botonLogin()     { return cy.get('[data-testid="btn-login"]') }
+  get mensajeError()   { return cy.get('[data-testid="error-message"]') }
+
+  navegarALogin() {
+    this.navigate('/login')
+    this.esperarCarga()
+  }
+
+  ingresarRut(rut) {
+    this.campoRut.type(rut)
+    this.botonContinuar.click()
+  }
+
+  ingresarPassword(password) {
+    this.campoPassword.type(password, { log: false })
+    this.botonLogin.click()
+  }
+
+  loginCompleto(rut, password) {
+    this.ingresarRut(rut)
+    this.ingresarPassword(password)
+  }
+
+  verificarErrorVisible() {
+    this.mensajeError.should('be.visible')
+  }
+}
+```
+
+> **Por qué getters y no propiedades en el constructor:** En Cypress cada `cy.get()` debe ejecutarse dentro del test — los getters los llaman en el momento correcto, no al instanciar la clase.
+
+### Componente reutilizable — NavBar
+
+```javascript
+// cypress/pages/components/NavBar.js
+export class NavBar {
+  get linkCitas()         { return cy.get('[data-testid="nav-citas"]') }
+  get botonCerrarSesion() { return cy.get('[data-testid="nav-logout"]') }
+
+  irACitas()      { this.linkCitas.click() }
+  cerrarSesion()  { this.botonCerrarSesion.click() }
+}
+```
+
+### DashboardPage — combina componentes
+
+```javascript
+// cypress/pages/DashboardPage.js
+import { BasePage } from './BasePage'
+import { NavBar }   from './components/NavBar'
+
+export class DashboardPage extends BasePage {
+  constructor() {
+    super()
+    this.navBar = new NavBar()
+  }
+
+  get tarjetaBienvenida() { return cy.get('[data-testid="welcome-card"]') }
+
+  verificarAccesoCompleto() {
+    this.tarjetaBienvenida.should('be.visible')
+  }
+}
+```
+
+### Uso en el spec
+
+```javascript
+// cypress/e2e/login.cy.js
+import { LoginPage }     from '../pages/LoginPage'
+import { DashboardPage } from '../pages/DashboardPage'
+
+const login     = new LoginPage()
+const dashboard = new DashboardPage()
+
+describe('REQ-002 — Login Portal', () => {
+
+  it('TC-001 | Login exitoso redirige al dashboard', () => {
+    login.navegarALogin()
+    login.loginCompleto('12345678-9', 'password123')
+    dashboard.verificarAccesoCompleto()
+  })
+
+  it('TC-002 | RUT invalido muestra error', () => {
+    login.navegarALogin()
+    login.ingresarRut('00000000-0')
+    login.verificarErrorVisible()
+  })
+
+})
+```
+
+### Diferencia clave: Cypress vs Playwright en POM
+
+| Aspecto | Cypress | Playwright |
+|---------|---------|------------|
+| Selectores | Getters `get campo()` | Propiedades `readonly campo: Locator` en constructor |
+| Herencia | `class LoginPage extends BasePage` | `class LoginPage extends BasePage` |
+| Inyección en tests | Instancia en el spec `new LoginPage()` | Fixture `test.extend<Pages>({...})` |
+| TypeScript | Opcional | Recomendado (tipado fuerte) |
+
+### Reglas
+
+| Regla | Detalle |
+|-------|---------|
+| Getters, no propiedades | `cy.get()` debe correr en tiempo de test, no en el constructor |
+| Sin assertions en pages | `should()` solo en el spec o en métodos de verificación explícitos |
+| Componentes separados | NavBar, Modal, Footer → clase propia |
+| Instancia fuera de `it()` | `const login = new LoginPage()` a nivel de `describe` |
+
+---
+
+## 23. Comandos de terminal
 
 ```bash
 # Correr un spec especifico
