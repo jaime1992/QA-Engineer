@@ -1,0 +1,30 @@
+{
+  "info": {
+    "_postman_id": "82fe15e0-fd55-4096-aca3-390e338003df",
+    "name": "NEWMAN",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55117362",
+    "_collection_link": "https://go.postman.co/collection/55117362-82fe15e0-fd55-4096-aca3-390e338003df?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "NEWMAN_TEST",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://postman-echo.com/get",
+          "protocol": "https",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "get"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
