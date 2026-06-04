@@ -1620,3 +1620,223 @@ Portal Pacientes BUPA
 ├── 📁 REQ-005 — RUT Formato Incorrecto
 └── 📁 Smoke Tests (subset critico para CI/CD)
 ```
+
+---
+
+## 26. Variables Dinamicas — Datos Unicos sin Scripts
+
+Las variables dinámicas generan valores aleatorios o únicos en tiempo de ejecución. Se usan directamente en el body o la URL con la sintaxis `{{$variable}}` — sin escribir ningún script.
+
+### Variables disponibles
+
+| Variable | Qué genera | Ejemplo de salida |
+|---|---|---|
+| `{{$guid}}` | UUID único | `a4f3c2d1-8e9b-4f7a-b3c2-1d2e3f4a5b6c` |
+| `{{$timestamp}}` | Timestamp Unix (segundos) | `1717516800` |
+| `{{$isoTimestamp}}` | Fecha ISO 8601 | `2026-06-04T12:00:00.000Z` |
+| `{{$randomInt}}` | Número entero 0–1000 | `742` |
+| `{{$randomFirstName}}` | Nombre aleatorio | `Carlos` |
+| `{{$randomLastName}}` | Apellido aleatorio | `González` |
+| `{{$randomEmail}}` | Email aleatorio | `user123@mail.com` |
+| `{{$randomPhoneNumber}}` | Teléfono aleatorio | `+1-555-0132` |
+| `{{$randomBoolean}}` | true o false | `true` |
+| `{{$randomAlphaNumeric}}` | Caracter alfanumérico | `x` |
+| `{{$randomUUID}}` | UUID v4 | igual que `$guid` |
+
+### Cuándo usarlas
+
+| Caso | Variable recomendada |
+|---|---|
+| Crear usuario con email único por ejecución | `{{$randomEmail}}` |
+| Generar ID de correlación para trazabilidad | `{{$guid}}` |
+| Timestamp de creación en el body | `{{$isoTimestamp}}` |
+| Cantidad o número de página aleatorio | `{{$randomInt}}` |
+
+### Ejemplo — POST con datos únicos sin script
+
+```
+POST {{base_url}}/api/usuarios
+Body (raw → JSON):
+{
+  "nombre": "{{$randomFirstName}}",
+  "apellido": "{{$randomLastName}}",
+  "email": "{{$randomEmail}}",
+  "request_id": "{{$guid}}",
+  "timestamp": "{{$isoTimestamp}}"
+}
+```
+
+Cada ejecución genera un usuario diferente — sin tocar el body.
+
+### Variables dinámicas vs Pre-request Script
+
+| | Variable dinámica `{{$x}}` | Pre-request Script |
+|---|---|---|
+| Código requerido | No | Sí |
+| Guardar valor para usarlo después | No | Sí — con `pm.environment.set()` |
+| Lógica condicional | No | Sí |
+| Casos de uso | Datos únicos simples | Lógica compleja, tokens, RUTs específicos |
+
+---
+
+## 27. Body Types — form-data, raw y text
+
+Al hacer un POST, PUT o PATCH, Postman ofrece varios formatos para el body. Elegir el incorrecto es causa frecuente de errores 400.
+
+### Tipos de body disponibles
+
+| Tipo | Cuándo usarlo | Content-Type generado |
+|---|---|---|
+| **none** | Requests sin body (GET, HEAD, DELETE) | — |
+| **form-data** | Formularios HTML, subida de archivos | `multipart/form-data` |
+| **x-www-form-urlencoded** | Formularios simples sin archivos | `application/x-www-form-urlencoded` |
+| **raw → JSON** | APIs REST modernas — el más común en QA | `application/json` |
+| **raw → Text** | Enviar texto plano | `text/plain` |
+| **raw → XML** | APIs SOAP o legacy | `application/xml` |
+| **binary** | Subir archivos binarios (imágenes, PDFs) | `application/octet-stream` |
+| **GraphQL** | APIs GraphQL | `application/json` |
+
+### raw → JSON (el más usado en QA)
+
+```
+POST {{base_url}}/api/auth/login
+Body: raw → JSON
+
+{
+  "email": "usuario@bupa.cl",
+  "password": "Pass123!"
+}
+```
+
+Postman agrega automáticamente `Content-Type: application/json`.
+
+### form-data (formularios y archivos)
+
+Se usa cuando el endpoint espera `multipart/form-data` — común en subida de documentos o formularios web:
+
+```
+POST {{base_url}}/api/documentos/upload
+Body: form-data
+
+Key         | Type | Value
+------------|------|------------------
+archivo     | File | documento.pdf
+tipo        | Text | certificado_medico
+paciente_id | Text | 12345
+```
+
+### x-www-form-urlencoded (formularios simples)
+
+```
+POST {{base_url}}/api/auth/login
+Body: x-www-form-urlencoded
+
+Key      | Value
+---------|------------------
+username | usuario@bupa.cl
+password | Pass123!
+```
+
+El servidor recibe los datos como `username=usuario%40bupa.cl&password=Pass123%21`.
+
+### Cómo identificar qué tipo usar
+
+```
+1. ¿El endpoint recibe JSON?         → raw → JSON
+2. ¿El endpoint sube archivos?        → form-data
+3. ¿Es un formulario HTML clásico?    → x-www-form-urlencoded
+4. ¿La documentación dice multipart?  → form-data
+```
+
+### Error frecuente
+
+```
+Enviaste: raw → JSON  { "email": "x", "password": "y" }
+El servidor esperaba: form-data
+
+Resultado: 400 Bad Request o campos null en el servidor
+Solución: cambiar el tipo de body en Postman para que coincida con lo que espera el endpoint
+```
+
+---
+
+## 28. Newman con Postman API — Ejecutar sin Exportar JSON
+
+En lugar de exportar la colección como archivo JSON, se puede ejecutar directamente desde la nube de Postman usando la API de Postman. Útil cuando las colecciones se actualizan frecuentemente o se trabaja en equipo.
+
+### Requisitos
+
+1. Cuenta Postman (gratuita)
+2. API Key de Postman
+3. UID de la colección y del environment
+
+### Paso 1 — Generar API Key
+
+1. En Postman → click en el avatar (esquina superior derecha)
+2. **Settings → API Keys → Generate API Key**
+3. Copiar la key — se muestra una sola vez
+
+### Paso 2 — Obtener el UID de la colección
+
+```bash
+curl https://api.getpostman.com/collections?apikey=TU_API_KEY
+```
+
+Respuesta:
+```json
+{
+  "collections": [
+    { "id": "abc123", "uid": "55117362-abc123", "name": "REQ-001 BUPA" }
+  ]
+}
+```
+
+### Paso 3 — Obtener el UID del environment
+
+```bash
+curl https://api.getpostman.com/environments?apikey=TU_API_KEY
+```
+
+### Paso 4 — Ejecutar Newman con la URL remota
+
+```bash
+newman run "https://api.getpostman.com/collections/$UID_COLECCION?apikey=$API_KEY" \
+  --environment "https://api.getpostman.com/environments/$UID_ENV?apikey=$API_KEY" \
+  --reporters cli,htmlextra \
+  --reporter-htmlextra-export postman/reportes/reporte.html
+```
+
+### En PowerShell
+
+```powershell
+$apiKey    = "TU_API_KEY"
+$uidCol    = "55117362-abc123"
+$uidEnv    = "55117362-env456"
+
+npx newman run "https://api.getpostman.com/collections/${uidCol}?apikey=${apiKey}" `
+  --environment "https://api.getpostman.com/environments/${uidEnv}?apikey=${apiKey}" `
+  --reporters cli,json `
+  --reporter-json-export postman/reportes/REQ-001-results.json
+```
+
+### Ventajas vs exportar JSON
+
+| | Archivo JSON exportado | Postman API (UID remoto) |
+|---|---|---|
+| Actualización | Manual — re-exportar cada vez | Automática — siempre usa la versión más reciente |
+| Versionado | En Git | En la nube de Postman |
+| Funciona sin internet | Si | No |
+| Ideal para | Proyectos locales, sin cuenta | Equipos que comparten colecciones |
+
+### Seguridad — nunca hardcodear la API Key
+
+Guardarla como GitHub Secret o variable de entorno:
+
+```yaml
+# GitHub Actions
+- name: Ejecutar Newman via Postman API
+  env:
+    POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+  run: |
+    newman run "https://api.getpostman.com/collections/$UID?apikey=$POSTMAN_API_KEY"
+```
